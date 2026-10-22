@@ -72,6 +72,7 @@
   /* ---------- markdown ---------- */
   function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
   function inl(s){
+    s = s.replace(/<(https?:\/\/[^>\s]+)>/g, "$1");
     s = esc(s)
       .replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>")
       .replace(/\*([^*]+)\*/g,"<em>$1</em>")
@@ -86,6 +87,9 @@
     for(var i=0;i<bloques.length;i++){
       var b = bloques[i].trim();
       if(!b) continue;
+      /* el HTML suelto del README (la imagen del logotipo) no se muestra aqui:
+         la app ya tiene su propia portada */
+      if(/^<[a-zA-Z!\/]/.test(b) && /&gt;$|>$/.test(b)) continue;
       if(/^---+$/.test(b)){ out += "<hr>"; continue; }
       if(b.indexOf("### ") === 0){ out += "<h3>"+inl(b.slice(4))+"</h3>"; continue; }
       if(b.indexOf("## ") === 0){ out += "<h2>"+inl(b.slice(3))+"</h2>"; continue; }
@@ -160,7 +164,8 @@
       var et = d.id === "readme" ? "Índice general" : d.t;
       h += '<a href="#'+d.id+'"'+(d.id===activo?' aria-current="page"':'')+'>'+esc(et)+"</a>";
     });
-    h += '<a href="#linea">Línea de tiempo</a></div>';
+    h += '<a href="#linea">Línea de tiempo</a>';
+    h += '<a href="#" id="btn-azar">Documento al azar</a></div>';
     D.secs.forEach(function(s){
       var lista = porSec[s.carpeta] || [];
       if(!lista.length) return;
@@ -271,6 +276,266 @@
     if(d === "sobrio") pararCampo(); else arrancarCampo();
   }
 
+
+  /* ===================== figuras =====================
+     Formas: intervalos para una estimacion con su margen, barras para magnitud.
+     Color: una serie usa un solo tono; dos series usan la paleta categorica,
+     que esta validada aparte para claro y para oscuro. Toda figura trae
+     etiquetas directas, tabla alternativa y globo al pasar el cursor. */
+
+  var PAL = ["--g1", "--g2", "--g3", "--g4"];
+  function pal(i){ return "var(" + PAL[i % PAL.length] + ")"; }
+
+  function ejeBonito(max){
+    var pasos = [1, 2, 2.5, 5, 10, 20, 25, 50];
+    for(var i = 0; i < pasos.length; i++){
+      var p = pasos[i];
+      if(max / p <= 5) return { paso:p, tope:Math.ceil(max / p) * p };
+    }
+    return { paso:50, tope:Math.ceil(max / 50) * 50 };
+  }
+
+  function svgIntervalos(f){
+    var filas = f.filas, n = filas.length;
+    var izq = 0, alto = 62, anchoTotal = 760, der = 64;
+    var eje = ejeBonito(Math.max.apply(null, filas.map(function(r){ return r.hi || r.v; })));
+    var x0 = izq, x1 = anchoTotal - der;
+    var esc = function(v){ return x0 + (v / eje.tope) * (x1 - x0); };
+    var h = n * alto + 30;
+    var s = '<svg viewBox="0 0 ' + anchoTotal + ' ' + h + '" role="img" aria-label="' + esc_(f.titulo) + '">';
+    for(var t = 0; t <= eje.tope + 0.001; t += eje.paso){
+      var x = esc(t);
+      s += '<line x1="'+x.toFixed(1)+'" y1="0" x2="'+x.toFixed(1)+'" y2="'+(n*alto-8)+'" stroke="var(--g-rejilla)" stroke-width="1"/>';
+      s += '<text x="'+x.toFixed(1)+'" y="'+(n*alto+14)+'" text-anchor="middle" font-size="13" fill="var(--tenue)" class="val">'+t+'</text>';
+    }
+    filas.forEach(function(r, i){
+      var y = i * alto + alto / 2 + 8;
+      if(r.lo != null){
+        s += '<line x1="'+esc(r.lo).toFixed(1)+'" y1="'+y+'" x2="'+esc(r.hi).toFixed(1)+'" y2="'+y+'" stroke="'+pal(0)+'" stroke-width="3" stroke-linecap="round" opacity=".45"/>';
+      }
+      s += '<circle class="marca" data-g="'+esc_(r.et + ' — ' + (r.glob || (r.v + ' puntos')))+'" cx="'+esc(r.v).toFixed(1)+'" cy="'+y+'" r="7" fill="'+pal(0)+'" stroke="var(--tarjeta)" stroke-width="2"/>';
+      s += '<text x="'+(esc(r.v)+13).toFixed(1)+'" y="'+(y+5)+'" font-size="15" fill="var(--tinta)" class="val">'+r.v.toFixed(1)+'</text>';
+      s += '<text x="0" y="'+(y-16)+'" font-size="15" fill="var(--tinta)">'+esc_(r.et)+'</text>';
+      if(r.sub) s += '<text x="0" y="'+(y+22)+'" font-size="13" fill="var(--tenue)">'+esc_(r.sub)+'</text>';
+    });
+    return s + "</svg>";
+  }
+
+  function svgBarras(f){
+    var filas = f.filas, series = f.series || [""], n = filas.length;
+    var altoFila = series.length > 1 ? 80 : 46, barra = series.length > 1 ? 20 : 22;
+    var anchoTotal = 760, etq = f.etqAncho || 200, der = 66;
+    var eje = ejeBonito(Math.max.apply(null, filas.map(function(r){
+      return Math.max.apply(null, [].concat(r.v)); })));
+    var x0 = etq, x1 = anchoTotal - der;
+    var esc = function(v){ return (v / eje.tope) * (x1 - x0); };
+    var h = n * altoFila + 32;
+    var s = '<svg viewBox="0 0 ' + anchoTotal + ' ' + h + '" role="img" aria-label="' + esc_(f.titulo) + '">';
+    for(var t = 0; t <= eje.tope + 0.001; t += eje.paso){
+      var x = x0 + esc(t);
+      s += '<line x1="'+x.toFixed(1)+'" y1="0" x2="'+x.toFixed(1)+'" y2="'+(n*altoFila-14)+'" stroke="var(--g-rejilla)" stroke-width="1"/>';
+      s += '<text x="'+x.toFixed(1)+'" y="'+(n*altoFila+16)+'" text-anchor="middle" font-size="13" fill="var(--tenue)" class="val">'+(f.formatoEje ? f.formatoEje(t) : t)+'</text>';
+    }
+    filas.forEach(function(r, i){
+      var vs = [].concat(r.v);
+      var base = i * altoFila;
+      s += '<text x="0" y="'+(base + (series.length > 1 ? 18 : altoFila/2 + 5))+'" font-size="15" fill="var(--tinta)">'+esc_(r.et)+'</text>';
+      vs.forEach(function(v, k){
+        var y = series.length > 1 ? base + 26 + k * (barra + 3) : base + (altoFila - barra) / 2;
+        var w = Math.max(2, esc(v));
+        var txt = (f.formato ? f.formato(v) : String(v));
+        s += '<rect class="marca" data-g="'+esc_(r.et + (series[k] ? " · " + series[k] : "") + " — " + txt)+'" x="'+x0+'" y="'+y+'" width="'+w.toFixed(1)+'" height="'+barra+'" rx="4" fill="'+pal(k)+'"/>';
+        s += '<rect x="'+x0+'" y="'+y+'" width="4" height="'+barra+'" fill="'+pal(k)+'"/>';
+        s += '<text x="'+(x0 + w + 7).toFixed(1)+'" y="'+(y + barra - 5)+'" font-size="14" fill="var(--tinta)" class="val">'+esc_(txt)+'</text>';
+      });
+    });
+    return s + "</svg>";
+  }
+
+  function esc_(x){ return esc(String(x)); }
+
+  function tablaDe(f){
+    var series = f.series || ["Valor"];
+    var s = '<div class="tabla-vista" hidden><table><thead><tr><th>' + esc_(f.ejeEt || "Categoría") + "</th>";
+    series.forEach(function(x){ s += "<th>" + esc_(x || "Valor") + "</th>"; });
+    if(f.filas.some(function(r){ return r.lo != null; })) s += "<th>Intervalo de confianza</th>";
+    s += "</tr></thead><tbody>";
+    f.filas.forEach(function(r){
+      s += "<tr><td>" + esc_(r.et + (r.sub ? " (" + r.sub + ")" : "")) + "</td>";
+      [].concat(r.v).forEach(function(v){ s += '<td class="n">' + esc_(f.formato ? f.formato(v) : v) + "</td>"; });
+      if(f.filas.some(function(q){ return q.lo != null; }))
+        s += '<td class="n">' + (r.lo != null ? r.lo + " a " + r.hi : "—") + "</td>";
+      s += "</tr>";
+    });
+    return s + "</tbody></table></div>";
+  }
+
+  function figura(f){
+    var cuerpo = f.tipo === "intervalos" ? svgIntervalos(f) : svgBarras(f);
+    var leyenda = "";
+    if((f.series || []).length > 1){
+      leyenda = '<div class="leyenda">' + f.series.map(function(x, i){
+        return '<span><i style="background:' + pal(i) + '"></i>' + esc_(x) + "</span>"; }).join("") + "</div>";
+    }
+    return '<figure class="figura"><h4>' + esc_(f.titulo) + "</h4>"
+      + (f.sub ? '<p class="sub">' + esc_(f.sub) + "</p>" : "")
+      + leyenda + cuerpo + tablaDe(f)
+      + '<figcaption class="fuente">' + esc_(f.fuente)
+      + ' · <button type="button" class="ver-tabla">Ver los datos en tabla</button></figcaption></figure>';
+  }
+
+  function kpis(lista){
+    return '<div class="kpi">' + lista.map(function(t){
+      return '<div class="tile"><span class="n">' + esc_(t.n) + '</span><span class="e">' + esc_(t.e) + "</span></div>";
+    }).join("") + "</div>";
+  }
+
+  /* ---------- que figura va en que documento ---------- */
+  var DONDE = { "03-ciencia-ensayos-clinicos":1, "04-microdosis-evidencia":2 };
+  var FIGURAS = {
+    "03-ciencia-ensayos-clinicos": function(){
+      return kpis([
+        { n:"258", e:"participantes en el COMP005" },
+        { n:"581", e:"participantes en el COMP006" },
+        { n:"25 %", e:"respondedores con 25 mg en el COMP005, semana 6" },
+        { n:"39 %", e:"respondedores con 25 mg en el COMP006, semana 6" }
+      ]) + figura({
+        tipo:"intervalos",
+        titulo:"Cuánto mejora la psilocibina frente a su control, en la escala MADRS",
+        sub:"Puntos de diferencia a favor de la dosis alta. La escala va de 0 a 60, así que estas distancias son la razón del desacuerdo sobre su relevancia clínica. La barra tenue es el intervalo de confianza del 95 %.",
+        ejeEt:"Ensayo",
+        filas:[
+          { et:"COMP005, 25 mg contra placebo", sub:"semana 6", v:3.6, lo:1.5, hi:5.7, glob:"3.6 puntos (IC 1.5 a 5.7)" },
+          { et:"COMP006, 25 mg contra 1 mg",    sub:"semana 6", v:3.8, lo:1.8, hi:5.8, glob:"3.8 puntos (IC 1.8 a 5.8)" },
+          { et:"Fase 2b, 25 mg contra 1 mg",    sub:"semana 3, se atenúa hacia la semana 12", v:6.6, glob:"6.6 puntos" }
+        ],
+        fuente:"Compass Pathways, resultados de fase 3 (2025 y 2026) y ensayo de fase 2b publicado en el New England Journal of Medicine (2022). Solo se grafican cifras que aparecen en este acervo."
+      });
+    },
+    "04-microdosis-evidencia": function(){
+      return figura({
+        tipo:"barras",
+        titulo:"Qué pasa cuando se compara la microdosis contra placebo",
+        sub:"Reducción de síntomas depresivos en el ensayo de fase 2, en puntos de escala. Los dos grupos bajaron casi igual, y el placebo bajó un poco más. Esa es la forma que tiene un resultado sin señal.",
+        ejeEt:"Ensayo", etqAncho:200,
+        series:["Microdosis de psilocibina", "Placebo"],
+        filas:[{ et:"Depresión mayor, fase 2", v:[5.4, 6.0] }],
+        formato:function(v){ return v.toFixed(1) + " pts"; },
+        fuente:"Ensayo de fase 2 doble ciego con control de placebo en depresión mayor."
+      }) + figura({
+        tipo:"barras",
+        titulo:"Cuánta gente microdosea, en Estados Unidos",
+        sub:"Porcentaje de adultos que reportó haber usado cada sustancia en el año previo. El dato importa porque mide una práctica masiva que sigue sin evidencia de eficacia.",
+        ejeEt:"Sustancia", etqAncho:150,
+        filas:[
+          { et:"Psilocibina",   v:4.26 },
+          { et:"MDMA o MDA",    v:1.81 },
+          { et:"Amanita muscaria", v:1.34 },
+          { et:"Ketamina",      v:1.26 },
+          { et:"LSD",           v:1.15 }
+        ],
+        formato:function(v){ return v.toFixed(2) + " %"; },
+        formatoEje:function(v){ return v + " %"; },
+        fuente:"Encuesta probabilística nacional de RAND, levantada entre septiembre y octubre de 2025 y publicada en enero de 2026."
+      }) + kpis([
+        { n:"≈10 M", e:"adultos microdosearon psilocibina, LSD o MDMA en el año previo" },
+        { n:"69 %", e:"de quienes usaron psilocibina microdosearon al menos una vez" },
+        { n:"47 %", e:"de los días de uso de psilocibina fueron microdosis" }
+      ]);
+    }
+  };
+
+  /* ---------- tablero del estatus legal ---------- */
+  var REGIMENES = [
+    { k:"A", et:"Prohibición", c:"--g1" },
+    { k:"B", et:"Programa regulado para adultos", c:"--g2" },
+    { k:"C", et:"Acceso médico con diagnóstico", c:"--g3" },
+    { k:"D", et:"Marco internacional", c:"--g4" }
+  ];
+  var JURISDICCIONES = [
+    { lugar:"México", r:"A", nota:"Prohibición sin excepción sanitaria. El Código Penal Federal sí ordena no perseguir la posesión para ceremonias de pueblos indígenas y afromexicanos. Sin umbral de consumo personal en la ley." },
+    { lugar:"Estados Unidos, federal", r:"A", nota:"Lista I desde 1970. Ningún psicodélico clásico aprobado todavía como medicamento." },
+    { lugar:"Oregón", r:"B", nota:"Medida 109, en operación desde enero de 2023. Sin diagnóstico, con facilitador capacitado y análisis obligatorio de potencia." },
+    { lugar:"Colorado", r:"B", nota:"Proposición 122, de 2022. Es el único que además despenaliza la posesión para adultos." },
+    { lugar:"Nuevo México", r:"C", nota:"Ley de Psilocibina Médica de 2025, la primera aprobada por una legislatura. Exige diagnóstico calificante y profesional de la salud." },
+    { lugar:"Australia", r:"C", nota:"Desde julio de 2023, prescriptores habilitados en indicaciones específicas. Primer país en hacerlo." },
+    { lugar:"Convenio de 1971", r:"D", nota:"Fiscaliza la psilocibina como sustancia. Según el comentario oficial y la Junta de Fiscalización, no fiscaliza los hongos que la contienen: eso lo decidió cada legislador nacional." }
+  ];
+  function tablero(){
+    var reg = {}; REGIMENES.forEach(function(x){ reg[x.k] = x; });
+    var h = '<div class="figura"><h4>Dónde está permitido, dónde no, y con qué condición</h4>'
+      + '<p class="sub">Las jurisdicciones que este acervo documenta, agrupadas por el tipo de régimen. El color repite lo que ya dice la etiqueta, nunca lo sustituye.</p>'
+      + '<div class="leyenda">' + REGIMENES.map(function(x){
+          return '<span><i style="background:var(' + x.c + ')"></i>' + esc_(x.et) + "</span>"; }).join("") + "</div>"
+      + '<div class="tablero">';
+    JURISDICCIONES.forEach(function(j){
+      h += '<div class="casilla" style="--c:var(' + reg[j.r].c + ')"><span class="lugar">' + esc_(j.lugar) + "</span>"
+        + '<span class="reg"><i></i>' + esc_(reg[j.r].et) + "</span>"
+        + '<span class="nota">' + esc_(j.nota) + "</span></div>";
+    });
+    return h + '</div><p class="fuente">Fecha de corte: 22 de octubre de 2026. El detalle de cada régimen está en los documentos de esta sección.</p></div>';
+  }
+
+  /* ---------- globo de las figuras ---------- */
+  var GLOBO = null;
+  function conectarGlobo(){
+    if(!GLOBO){
+      GLOBO = document.createElement("div");
+      GLOBO.className = "globo";
+      document.body.appendChild(GLOBO);
+    }
+    Array.prototype.forEach.call(document.querySelectorAll(".figura .marca"), function(m){
+      m.addEventListener("mouseenter", function(e){
+        GLOBO.textContent = m.getAttribute("data-g");
+        GLOBO.setAttribute("data-ver", "si");
+      });
+      m.addEventListener("mousemove", function(e){
+        GLOBO.style.left = Math.min(window.innerWidth - 250, e.clientX + 14) + "px";
+        GLOBO.style.top = (e.clientY - 34) + "px";
+      });
+      m.addEventListener("mouseleave", function(){ GLOBO.removeAttribute("data-ver"); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".ver-tabla"), function(b){
+      b.addEventListener("click", function(){
+        var t = b.closest(".figura").querySelector(".tabla-vista");
+        if(!t) return;
+        t.hidden = !t.hidden;
+        b.textContent = t.hidden ? "Ver los datos en tabla" : "Ocultar la tabla";
+      });
+    });
+  }
+
+  /* ---------- brindis: aviso breve al pie ---------- */
+  var BRINDIS = null, relojBrindis = null;
+  function brindar(texto){
+    if(!BRINDIS){
+      BRINDIS = document.createElement("div");
+      BRINDIS.className = "brindis";
+      BRINDIS.setAttribute("role", "status");
+      document.body.appendChild(BRINDIS);
+    }
+    BRINDIS.textContent = texto;
+    BRINDIS.setAttribute("data-ver", "si");
+    clearTimeout(relojBrindis);
+    relojBrindis = setTimeout(function(){ BRINDIS.removeAttribute("data-ver"); }, 2400);
+  }
+  function copiarEnlace(){
+    var url = location.href;
+    function respaldo(){
+      brindar("No se pudo copiar. El enlace es: " + url);
+    }
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(url).then(function(){ brindar("Enlace copiado"); }, respaldo);
+      } else respaldo();
+    }catch(e){ respaldo(); }
+  }
+  function alAzar(){
+    var l = D.docs.filter(function(d){ return d.ruta.split("/").pop() !== "README.md"; });
+    var d = l[Math.floor(Math.random() * l.length)];
+    location.hash = d.id;
+  }
+
   /* ---------- vistas ---------- */
   function vistaPortada(){
     var h = '<div class="portada">'
@@ -310,7 +575,8 @@
       + (s ? '<a href="#s'+s.n+'">'+s.n+" "+esc(s.t)+"</a><span>/</span>" : "")
       + "<span>"+esc(d.ruta)+"</span>"
       + (d.corte ? '<span>·</span><span>corte: '+esc(d.corte)+"</span>" : "")
-      + '<span>·</span><span>'+d.pal.toLocaleString("es-MX")+" palabras</span></div>";
+      + '<span>·</span><span>'+d.pal.toLocaleString("es-MX")+" palabras</span>"
+      + '<span class="acciones"><button type="button" id="btn-copiar">Copiar enlace</button></span></div>';
     var vecinos = "";
     if(s){
       var lista = porSec[s.carpeta], k = lista.indexOf(d);
@@ -321,7 +587,26 @@
         + "</div>";
     }
     var tn = s ? ' style="--tono:' + tono(s.n) + '"' : "";
-    return '<div' + tn + ">" + migas + '<div class="doc">' + md(d.md) + "</div>" + vecinos + "</div>";
+    var cuerpo = md(d.md);
+    if(FIGURAS[d.id]){
+      var bloque = FIGURAS[d.id]();
+      var corte = -1, busca = 0, k = DONDE[d.id] || 1;
+      for(var q = 0; q < k; q++){
+        corte = cuerpo.indexOf("<h2>", busca);
+        if(corte < 0) break;
+        busca = corte + 4;
+      }
+      cuerpo = corte >= 0 ? cuerpo.slice(0, corte) + bloque + cuerpo.slice(corte) : cuerpo + bloque;
+    }
+    var menc = "";
+    if((d.mencionado_en || []).length){
+      menc = '<div class="menciones"><h4>También aparece en</h4><ul>'
+        + d.mencionado_en.map(function(x){
+            var o = porId[x]; if(!o) return "";
+            return '<li><a href="#' + o.id + '">' + esc(o.t) + "</a></li>";
+          }).join("") + "</ul></div>";
+    }
+    return '<div' + tn + ">" + migas + '<div class="doc">' + cuerpo + "</div>" + menc + vecinos + "</div>";
   }
 
   function vistaSec(num){
@@ -334,6 +619,7 @@
       + '<div class="rotulo"><h1>'+esc(s.t)+'</h1></div></div>'
       + '<span class="sello">Sección '+s.n+'</span>'
       + '<p class="entrada">'+esc(s.d)+"</p>"
+      + (s.n === "05" ? tablero() : "")
       + (s.n === "06" ? '<div class="aviso"><b>Privado</b>Información de salud y de hábitos. No forma parte del acervo y no debería salir de aquí.</div>' : "")
       + '<div class="rejilla">';
     lista.forEach(function(d){
@@ -396,6 +682,8 @@
     $("#vista").innerHTML = html;
     pintarRiel(activo);
     pintarTelas();
+    conectarGlobo();
+    var bc = $("#btn-copiar"); if(bc) bc.addEventListener("click", copiarEnlace);
     tonosDeVista(hash);
     pintarAvance();
     if(hash === "linea") conectarFiltros();
@@ -483,6 +771,7 @@
       $("#vista").innerHTML = vistaBuscar(q);
       pintarRiel(null);
       pintarTelas();
+      conectarGlobo();
       window.scrollTo(0,0);
     }, 160);
   });
@@ -499,6 +788,7 @@
     var href = a.getAttribute("href") || "";
     if(href.indexOf("doc:") === 0){ e.preventDefault(); caja.value=""; location.hash = href.slice(4); if((location.hash||"").slice(1) === href.slice(4)) pintar(); return; }
     if(href.indexOf("sec:") === 0){ e.preventDefault(); caja.value=""; location.hash = "s" + href.slice(4); return; }
+    if(a.id === "btn-azar"){ e.preventDefault(); caja.value = ""; alAzar(); return; }
     if(href.charAt(0) === "#"){ caja.value = ""; }
   });
 

@@ -14,13 +14,13 @@ RAIZ = os.path.dirname(AQUI)
 DIST = os.path.join(RAIZ, "dist")
 
 SECCIONES = [
-    ("00-referencia",          "00", "Referencia",         "La linea de tiempo y el glosario."),
-    ("01-precursores",         "01", "Precursores",        "Veintiocho fichas y cinco capitulos largos."),
+    ("00-referencia",          "00", "Referencia",         "La línea de tiempo y el glosario."),
+    ("01-precursores",         "01", "Precursores",        "Veintiocho fichas y cinco capítulos largos."),
     ("02-historia",            "02", "Historia",           "Cuatro etapas, de 1947 a hoy."),
-    ("03-ciencia",             "03", "Ciencia",            "Farmacologia, ensayos, seguridad y critica."),
+    ("03-ciencia",             "03", "Ciencia",            "Farmacología, ensayos, seguridad y crítica."),
     ("04-microdosis",          "04", "Microdosis",         "Donde la distancia entre lo que se cree y lo que se sabe es mayor."),
-    ("05-marco-legal",         "05", "Marco legal",        "Mexico, el regimen internacional y Estados Unidos."),
-    ("99-bibliografia",        "99", "Bibliografia",       "Todas las fuentes en un solo lugar."),
+    ("05-marco-legal",         "05", "Marco legal",        "México, el régimen internacional y Estados Unidos."),
+    ("99-bibliografia",        "99", "Bibliografía",       "Todas las fuentes en un solo lugar."),
 ]
 RAIZ_DOCS = ["README.md", "AVISO.md"]
 
@@ -97,7 +97,7 @@ def construir_datos():
             return "[%s](%s)" % (txt, nuevo) if nuevo else txt
 
         md = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", rep, md)
-        mc = re.search(r"[Ff]echa de (?:este archivo|corte)\s*:?\s*([^.\n]+)", md)
+        mc = re.search(r"[Ff]echa de (?:este archivo|corte)\s*:?\s*(\d[^.\n]*)", md)
         docs.append({
             "id": mapa[r], "ruta": r, "sec": r.split("/")[0] if "/" in r else "",
             "t": titulo(md, r), "md": md, "pal": len(md.split()),
@@ -128,8 +128,46 @@ def construir_datos():
     }
 
 
+
+def terminos(doc):
+    """Como se nombra a este documento dentro del texto de los demas."""
+    t = doc["t"]
+    if "/fichas/" not in doc["ruta"] and "/capitulos/" not in doc["ruta"]:
+        return []
+    partes = [p.strip() for p in re.split(r"\s+y\s+", t)]
+    ter = set([t])
+    for p in partes:
+        ter.add(p)
+        palabras = p.split()
+        if len(palabras) >= 2 and len(palabras[-1]) > 3:
+            ter.add(palabras[-1])
+    return sorted(ter, key=len, reverse=True)
+
+
+def menciones(docs):
+    """Quien aparece en que documento, calculado sobre el texto ya escrito."""
+    fichas = [d for d in docs if terminos(d)]
+    for d in docs:
+        d["mencionado_en"] = []
+        d["menciona"] = []
+    for d in docs:
+        cuerpo = d["md"]
+        for f in fichas:
+            if f["id"] == d["id"]:
+                continue
+            for term in terminos(f):
+                if re.search(r"(?<![\w\u00c0-\u017f])" + re.escape(term) + r"(?![\w\u00c0-\u017f])", cuerpo):
+                    d["menciona"].append(f["id"])
+                    f["mencionado_en"].append(d["id"])
+                    break
+    for d in docs:
+        d["menciona"] = sorted(set(d["menciona"]))
+        d["mencionado_en"] = sorted(set(d["mencionado_en"]))
+
+
 def main():
     datos = construir_datos()
+    menciones(datos["docs"])
     json_datos = json.dumps(datos, ensure_ascii=False, separators=(",", ":"))
     css = open(os.path.join(AQUI, "estilo.css"), encoding="utf-8").read()
     js = open(os.path.join(AQUI, "app.js"), encoding="utf-8").read()
