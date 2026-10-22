@@ -1,3 +1,4 @@
+<canvas id="campo" aria-hidden="true"></canvas>
 <header class="barra">
   <div class="ancho">
     <a class="marcaja" href="#inicio" style="text-decoration:none;color:inherit">
@@ -10,12 +11,13 @@
     </div>
     <div class="herramientas">
       <button type="button" id="btn-riel" aria-label="Mostrar el índice">Índice</button>
+      <button type="button" id="btn-dosis" class="dosis" title="Cuánto psicodélico: sobrio, normal o intenso">Dosis <b>Normal</b></button>
       <button type="button" id="btn-lectura" aria-pressed="false" title="Tipografía más grande y columna más angosta">Lectura</button>
       <button type="button" id="btn-tema" title="Claro, oscuro o el del sistema">Sistema</button>
     </div>
   </div>
 </header>
-<div class="aurora" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"><div class="avance" id="avance"></div></div>
 
 <div class="ancho cuerpo">
   <nav class="riel" id="riel" aria-label="Índice del acervo"></nav>

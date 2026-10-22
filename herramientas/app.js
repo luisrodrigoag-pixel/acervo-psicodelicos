@@ -181,6 +181,96 @@
     $("#riel").innerHTML = h;
   }
 
+
+  /* ---------- campo: fondo vivo detras de todo ---------- */
+  var CAMPO = { cv:null, g:null, t:0, corriendo:false, ultimo:0, tonos:["--t01","--t02","--t00"] };
+  function quietud(){
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+  function dosisActual(){ return leer("ep.dosis", "normal"); }
+
+  function medirCampo(){
+    var cv = CAMPO.cv; if(!cv) return;
+    var dpr = Math.min(1.5, window.devicePixelRatio || 1);
+    cv.width = Math.round(window.innerWidth * dpr);
+    cv.height = Math.round(window.innerHeight * dpr);
+    CAMPO.g = cv.getContext("2d");
+    CAMPO.g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function dibujarCampo(){
+    var g = CAMPO.g; if(!g) return;
+    var w = window.innerWidth, h = window.innerHeight;
+    g.clearRect(0, 0, w, h);
+    var colores = CAMPO.tonos.map(leeColor);
+    var n = 16, t = CAMPO.t;
+    for(var i = 0; i < n; i++){
+      var k = i / (n - 1);
+      var base = h * (0.04 + k * 0.94);
+      var amp = h * (0.05 + 0.09 * Math.sin(i * 1.7));
+      var frec = 0.0016 + 0.0013 * ((i % 4) + 1);
+      var fase = t * (0.22 + i * 0.015) + i * 0.9;
+      g.beginPath();
+      for(var x = -40; x <= w + 40; x += 14){
+        var y = base
+              + Math.sin(x * frec + fase) * amp
+              + Math.sin(x * frec * 2.1 - fase * 0.7) * amp * 0.35;
+        if(x === -40) g.moveTo(x, y); else g.lineTo(x, y);
+      }
+      g.strokeStyle = colores[i % colores.length];
+      g.lineWidth = 2 + (i % 3) * 2.4;
+      g.lineCap = "round";
+      g.stroke();
+    }
+  }
+  function cicloCampo(ahora){
+    if(!CAMPO.corriendo) return;
+    if(ahora - CAMPO.ultimo > 42){           /* ~24 cuadros por segundo, de sobra */
+      CAMPO.ultimo = ahora;
+      CAMPO.t += 0.055;
+      dibujarCampo();
+    }
+    requestAnimationFrame(cicloCampo);
+  }
+  function arrancarCampo(){
+    var d = dosisActual();
+    if(d === "sobrio" || !CAMPO.cv){ pararCampo(); return; }
+    medirCampo();
+    if(quietud()){ CAMPO.t = 1.3; dibujarCampo(); pararCampo(); return; }  /* dibujo fijo */
+    if(CAMPO.corriendo) return;
+    CAMPO.corriendo = true;
+    requestAnimationFrame(cicloCampo);
+  }
+  function pararCampo(){ CAMPO.corriendo = false; }
+  function tonosDeVista(hash){
+    var num = null;
+    if(porId[hash]) num = numDeCarpeta(porId[hash].sec);
+    else if(/^s\d\d$/.test(hash)) num = hash.slice(1);
+    else if(hash === "linea") num = "02";
+    var clave = TONOS[num];
+    CAMPO.tonos = clave ? [clave, "--t02", "--t00"] : ["--t01", "--t04", "--t02"];
+    if(!CAMPO.corriendo) dibujarCampo();
+  }
+
+  /* ---------- avance de lectura ---------- */
+  function pintarAvance(){
+    var barra = $("#avance"); if(!barra) return;
+    var alto = document.documentElement.scrollHeight - window.innerHeight;
+    var p = alto > 40 ? Math.min(1, Math.max(0, window.scrollY / alto)) : 0;
+    barra.style.width = (p * 100).toFixed(1) + "%";
+  }
+
+  /* ---------- control de dosis ---------- */
+  var DOSIS = ["sobrio", "normal", "intenso"];
+  var ETIQUETA = { sobrio:"Sobrio", normal:"Normal", intenso:"Intenso" };
+  function aplicarDosis(d){
+    if(DOSIS.indexOf(d) < 0) d = "normal";
+    document.documentElement.setAttribute("data-dosis", d);
+    guardar("ep.dosis", d);
+    var b = $("#btn-dosis");
+    if(b){ b.innerHTML = 'Dosis <b>' + ETIQUETA[d] + '</b>'; b.setAttribute("aria-label", "Dosis visual: " + ETIQUETA[d]); }
+    if(d === "sobrio") pararCampo(); else arrancarCampo();
+  }
+
   /* ---------- vistas ---------- */
   function vistaPortada(){
     var h = '<div class="portada">'
@@ -306,6 +396,8 @@
     $("#vista").innerHTML = html;
     pintarRiel(activo);
     pintarTelas();
+    tonosDeVista(hash);
+    pintarAvance();
     if(hash === "linea") conectarFiltros();
     window.scrollTo(0, 0);
     cerrarRiel();
@@ -367,6 +459,17 @@
   $("#btn-lectura").addEventListener("click", function(){
     aplicarLectura(document.documentElement.getAttribute("data-lectura") !== "si");
   });
+  CAMPO.cv = $("#campo");
+  aplicarDosis(leer("ep.dosis", "normal"));
+  window.addEventListener("scroll", pintarAvance, { passive:true });
+  document.addEventListener("visibilitychange", function(){
+    if(document.hidden) pararCampo(); else arrancarCampo();
+  });
+  $("#btn-dosis").addEventListener("click", function(){
+    var i = DOSIS.indexOf(dosisActual());
+    aplicarDosis(DOSIS[(i + 1) % DOSIS.length]);
+  });
+
   $("#btn-riel").addEventListener("click", function(){
     if($("#riel").getAttribute("data-abierto") === "si") cerrarRiel(); else abrirRiel();
   });
@@ -401,11 +504,12 @@
 
   var relojTela = null;
   window.addEventListener("resize", function(){
-    clearTimeout(relojTela); relojTela = setTimeout(pintarTelas, 180);
+    clearTimeout(relojTela);
+    relojTela = setTimeout(function(){ pintarTelas(); medirCampo(); dibujarCampo(); pintarAvance(); }, 180);
   });
   if(window.matchMedia){
     var mq = window.matchMedia("(prefers-color-scheme: dark)");
-    if(mq.addEventListener) mq.addEventListener("change", pintarTelas);
+    if(mq.addEventListener) mq.addEventListener("change", function(){ pintarTelas(); dibujarCampo(); });
   }
 
   window.addEventListener("hashchange", pintar);
