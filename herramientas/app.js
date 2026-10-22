@@ -197,6 +197,16 @@
   function tapa(clave){
     var d = TAPAS[clave];
     if(!d) return "";
+    var tn = REGISTROS[d.r] || "--t07";
+    var ruta = (D.portadas || {})[clave];
+    if(ruta){
+      /* portada verificada: dominio publico o licencia libre.
+         Se conserva el lomo de color para que el registro siga leyendose. */
+      return '<div class="tapa portada" style="--tono:var(' + tn + ')">'
+        + '<img src="' + esc(ruta) + '" alt="' + esc("Portada de " + d.t) + '" loading="lazy">'
+        + '<span class="pie">' + (d.y ? esc(d.y) + " · " : "") + esc(NOMREG[d.r] || "") + '</span>'
+        + '</div>';
+    }
     var n   = d.t.length;
     var fs  = n <= 16 ? 22 : n <= 30 ? 18.5 : n <= 48 ? 15 : 12.5;
     var anc = 132;

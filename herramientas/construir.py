@@ -24,6 +24,7 @@ SECCIONES = [
     ("99-bibliografia",        "99", "Bibliografía",       "Todas las fuentes en un solo lugar."),
 ]
 RAIZ_DOCS = ["README.md", "AVISO.md"]
+PORTADAS = os.path.join(RAIZ, "recursos", "portadas")
 RETRATOS = os.path.join(RAIZ, "recursos", "retratos")
 EXT_IMG = (".jpg", ".jpeg", ".png", ".webp")
 
@@ -37,6 +38,21 @@ def retrato_de(ruta_md):
         if os.path.exists(os.path.join(RETRATOS, tallo + ext)):
             return "retratos/" + tallo + ext
     return ""
+
+
+
+def portadas_disponibles():
+    """recursos/portadas/<clave>.jpg sustituye a la tapa dibujada de esa obra.
+       Solo deben ponerse aqui portadas verificadas: dominio publico o licencia
+       libre, con su fuente anotada en recursos/portadas/FUENTES.md."""
+    mapa = {}
+    if not os.path.isdir(PORTADAS):
+        return mapa
+    for f in sorted(os.listdir(PORTADAS)):
+        raiz_f, ext = os.path.splitext(f)
+        if ext.lower() in EXT_IMG:
+            mapa.setdefault(raiz_f, "portadas/" + f)
+    return mapa
 
 
 def slug(p):
@@ -120,6 +136,8 @@ def construir_datos():
             "retrato": retrato_de(r),
         })
 
+    portadas = portadas_disponibles()
+
     tl = [d for d in docs if d["ruta"].endswith("linea-de-tiempo.md")]
     eras, era = [], None
     if tl:
@@ -135,7 +153,7 @@ def construir_datos():
                                      "x": " ".join(m.group(2).split())})
 
     return {
-        "docs": docs,
+        "portadas": portadas, "docs": docs,
         "secs": [{"n": n, "carpeta": c, "t": t, "d": d} for c, n, t, d in SECCIONES],
         "eras": eras,
         "total": sum(d["pal"] for d in docs),
@@ -226,6 +244,16 @@ def main():
                 shutil.copy(os.path.join(RETRATOS, f), os.path.join(destino, f))
                 n += 1
         print("retratos:    %d" % n)
+
+    if os.path.isdir(PORTADAS):
+        destino = os.path.join(DIST, "portadas")
+        os.makedirs(destino, exist_ok=True)
+        n = 0
+        for f in sorted(os.listdir(PORTADAS)):
+            if f.lower().endswith(EXT_IMG):
+                shutil.copy(os.path.join(PORTADAS, f), os.path.join(destino, f))
+                n += 1
+        print("portadas:    %d" % n)
 
     sw = open(os.path.join(AQUI, "sw.js"), encoding="utf-8").read().replace("__VERSION__", version)
     open(os.path.join(DIST, "sw.js"), "w", encoding="utf-8").write(sw)
