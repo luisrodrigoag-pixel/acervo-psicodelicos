@@ -20,6 +20,7 @@ SECCIONES = [
     ("03-ciencia",             "03", "Ciencia",            "Farmacología, ensayos, seguridad y crítica."),
     ("04-microdosis",          "04", "Microdosis",         "Donde la distancia entre lo que se cree y lo que se sabe es mayor."),
     ("05-marco-legal",         "05", "Marco legal",        "México, el régimen internacional y Estados Unidos."),
+    ("07-biblioteca",          "07", "Biblioteca",         "Qué leer, ver y escuchar después del acervo."),
     ("99-bibliografia",        "99", "Bibliografía",       "Todas las fuentes en un solo lugar."),
 ]
 RAIZ_DOCS = ["README.md", "AVISO.md"]

@@ -165,15 +165,15 @@ mark{background:var(--marca);color:var(--tinta);border-radius:2px;padding:0 1px}
 
 :root{
   --t00:#17B6D6; --t01:#E8237A; --t02:#7C4DEF; --t03:#12B98C;
-  --t04:#E0742B; --t05:#C08A06; --t99:#9B5BE0;
+  --t04:#E0742B; --t05:#C08A06; --t07:#2E72E0; --t99:#9B5BE0;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --t00:#49D8F2; --t01:#FF5FA2; --t02:#A98AFF; --t03:#3FD9AE;
-  --t04:#FFA05A; --t05:#F0C44A; --t99:#C79BFF;
+  --t04:#FFA05A; --t05:#F0C44A; --t07:#78A6FF; --t99:#C79BFF;
 }}
 :root[data-theme="dark"]{
   --t00:#49D8F2; --t01:#FF5FA2; --t02:#A98AFF; --t03:#3FD9AE;
-  --t04:#FFA05A; --t05:#F0C44A; --t99:#C79BFF;
+  --t04:#FFA05A; --t05:#F0C44A; --t07:#78A6FF; --t99:#C79BFF;
 }
 
 /* --- cursor hongo --- */

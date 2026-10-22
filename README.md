@@ -22,6 +22,8 @@ Lee primero el [aviso](AVISO.md). Explica el alcance, los criterios editoriales 
 
 **[05-marco-legal](05-marco-legal/)** — México con su texto legal citado, el régimen internacional de los tratados y el mapa de Estados Unidos.
 
+**[07-biblioteca](07-biblioteca/)** — Libros, documentales y podcasts, cada uno con el registro al que pertenece: evidencia, divulgación o testimonio.
+
 **[99-bibliografia](99-bibliografia/)** — Todas las fuentes en un solo lugar, con enlace y, donde existe, DOI.
 
 ## Cómo leerlo

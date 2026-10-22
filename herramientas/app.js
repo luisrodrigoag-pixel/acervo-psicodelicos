@@ -12,7 +12,7 @@
 
   /* ---------- tono por seccion ---------- */
   var TONOS = { "00":"--t00", "01":"--t01", "02":"--t02", "03":"--t03",
-                "04":"--t04", "05":"--t05", "06":"--ocre", "99":"--t99" };
+                "04":"--t04", "05":"--t05", "06":"--ocre", "07":"--t07", "99":"--t99" };
   function tono(num){ return "var(" + (TONOS[num] || "--acento") + ")"; }
   function numDeCarpeta(carpeta){
     for(var i=0;i<D.secs.length;i++) if(D.secs[i].carpeta === carpeta) return D.secs[i].n;
