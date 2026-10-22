@@ -8,6 +8,8 @@ Lo que se escucha sobre psicodélicos en español está casi todo en el registro
 
 ### Xamanic Camino al Despertar
 
+::tapa xamanic::
+
 Producido por DMT Creativos, en México. Testimonio y práctica espiritual.
 
 Se describe como un espacio para descubrir el propio proceso de despertar, y la clasificación que lleva en los catálogos —Espiritualidad, no Ciencia— es la correcta. Apple Podcasts le cuenta 76 episodios y lo sitúa activo entre 2023 y 2026, con publicación semanal; Listen Notes dice que empezó en febrero de 2022. No resolví la discrepancia. Está en Spotify, Apple Podcasts, Amazon Music e iVoox.
@@ -32,11 +34,15 @@ De estos tengo la ficha de catálogo, no la escucha. Los consigno para que exist
 
 ### Psychedelics Today
 
+::tapa psychedelics-today::
+
 Joe Moore y Kyle Buller, Estados Unidos. Divulgación, con episodios de evidencia.
 
 El archivo llega hasta 2016, lo que lo convierte en el registro continuo más largo del campo: están grabadas la década de expectativa, el dinero que entró, los ensayos que salieron bien y los que no. La calidad varía según el invitado —hay investigadores y hay emprendedores— y conviene elegir episodio por invitado, no escuchar en orden.
 
 ### The Hamilton Morris Podcast
+
+::tapa hamilton-morris::
 
 Hamilton Morris, Estados Unidos, desde 2021. Divulgación química.
 

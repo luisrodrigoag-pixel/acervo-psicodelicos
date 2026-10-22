@@ -425,3 +425,20 @@ body::after{   /* velo que suaviza el campo y mantiene el contraste del riel */
   .ficha.conplaca .emblema{ width:52px; height:52px; padding:5px; }
   .retrato .emblema{ width:84px; height:84px; padding:9px; }
 }
+
+/* --- tapas tipograficas ---------------------------------------------------
+   Ninguna portada, cartel ni caratula real se reproduce en este acervo.
+   Cada tapa se dibuja con la tipografia de la casa y el color del registro:
+   verde evidencia, azul divulgacion, naranja testimonio, gris entretenimiento. */
+.obra{ display:grid; grid-template-columns:112px 1fr; gap:22px; align-items:start; margin:28px 0; }
+.obra .obratxt > :first-child{ margin-top:0; }
+.obra .obratxt > :last-child{ margin-bottom:0; }
+.tapa{ display:block; width:100%; height:auto; color:var(--tono,var(--acento));
+       border-radius:2px; box-shadow:0 12px 24px -18px rgba(0,0,0,.65); }
+.tapa .tt{ font-family:var(--exhibe); font-weight:400; fill:var(--tinta); }
+.tapa .ta{ font-family:var(--dato); font-size:7.8px; letter-spacing:.1em; fill:var(--tinta); opacity:.72; }
+.tapa .ty{ font-family:var(--dato); font-size:9px; fill:currentColor; }
+.tapa .tr{ font-family:var(--dato); font-size:6.8px; letter-spacing:.14em; fill:var(--tinta); opacity:.52; }
+@media (max-width:620px){
+  .obra{ grid-template-columns:76px 1fr; gap:14px; margin:20px 0; }
+}

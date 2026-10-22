@@ -8,25 +8,31 @@ Seis películas, ordenadas de la más cercana a las fuentes a la más alejada. C
 
 ### María Sabina, mujer espíritu
 
+::tapa maria-sabina-pelicula::
+
 Nicolás Echeverría, México, 1979, 80 minutos. Testimonio y documento.
 
 Es la película que importa más en este acervo y la que menos gente ha visto. Echeverría llegó a Huautla cuando Sabina ya era una figura pública y el pueblo llevaba dos décadas recibiendo visitantes. Ella aceptó por primera vez que se filmara una velada. Lo que queda es el único registro audiovisual de la práctica en su contexto, hecho con su consentimiento y en mazateco, con diálogos preparados por Álvaro Estrada —el mismo que recogió su autobiografía— y narración de Andrés Henestrosa. La produjeron el Centro de Producción de Cortometraje, los Estudios Churubusco Azteca y Radio Televisión y Cinematografía.
 
 Verla después de la ficha de Sabina y del capítulo sobre Wasson cambia el orden de las cosas: primero está la práctica, y la historia que este acervo cuenta es la de lo que le pasó encima.
 
-→ [Ficha: María Sabina](../01-precursores/maria-sabina.md) · [Capítulo: Wasson y Huautla](../01-precursores/robert-gordon-wasson.md)
+→ [Capítulo: Wasson y María Sabina](../01-precursores/capitulos/wasson-y-maria-sabina.md) · [Ficha: Wasson](../01-precursores/fichas/robert-gordon-wasson.md)
 
 ### The Sunshine Makers
+
+::tapa sunshine-makers::
 
 Cosmo Feilding-Mellen, Reino Unido, 2015. Testimonio.
 
 Nicholas Sand y Tim Scully cuentan, ya viejos, cómo fabricaron buena parte del LSD que circuló en Estados Unidos a finales de los sesenta. Es historia oral de los implicados, con todo lo que eso implica: son protagonistas simpáticos contando su propia leyenda. Como documento de cómo se pensaba entonces —la convicción sincera de que repartir LSD cambiaría la especie— no tiene sustituto.
 
-→ [Capítulo: La ruptura, 1963–1970](../02-historia/la-ruptura.md)
+→ [Capítulo: El cierre, 1962 a 1971](../02-historia/el-cierre.md)
 
 ## La divulgación
 
 ### How to Change Your Mind
+
+::tapa how-to-change::
 
 Alex Gibney y Michael Pollan, Netflix, 2022, cuatro episodios. Divulgación.
 
@@ -38,6 +44,8 @@ Si solo se va a ver una cosa de esta lista y no se tiene contexto previo, es est
 
 ### Fantastic Fungi
 
+::tapa fantastic-fungi::
+
 Louie Schwartzberg, Estados Unidos, 2019. Divulgación, con reservas.
 
 Fotografía en time-lapse extraordinaria y una tesis mucho más amplia que su evidencia. Paul Stamets lleva buena parte del hilo y afirma cosas sobre micelio, conciencia y evolución humana que no están demostradas y que la película presenta sin contrapeso. Vale por las imágenes y por el entusiasmo; no funciona como fuente.
@@ -46,13 +54,17 @@ Fotografía en time-lapse extraordinaria y una tesis mucho más amplia que su ev
 
 ### Dosed
 
+::tapa dosed::
+
 Tyler Chandler, Canadá, 2019. Testimonio.
 
 Sigue a una mujer con adicción a la heroína que prueba psilocibina e ibogaína. Es honesto en lo que muestra y la protagonista es creíble. El problema es lo que no dice: la ibogaína tiene riesgo cardiaco documentado —prolonga el intervalo QT y se le atribuyen muertes en clínicas sin monitoreo—, y la película no lo trata. Quien la vea sin saberlo puede salir con la idea de que es un tratamiento más entre otros.
 
-→ [Seguridad y riesgos](../03-ciencia/seguridad.md)
+→ [Seguridad y riesgos](../03-ciencia/seguridad-y-riesgos.md)
 
 ### Have a Good Trip
+
+::tapa have-a-good-trip::
 
 Donick Cary, Netflix, 2020. Entretenimiento.
 

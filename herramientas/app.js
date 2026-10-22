@@ -147,6 +147,90 @@
 
   function esPersona(d){ return d.ruta.indexOf("/fichas/") > 0 || d.ruta.indexOf("/capitulos/") > 0; }
   function tallo(d){ var p = d.ruta.split("/").pop(); return p.slice(0, -3); }
+
+  /* --- tapas: portadas tipograficas generadas.
+     No se reproduce ninguna portada, cartel ni caratula real: cada tapa se dibuja
+     aqui con la tipografia del acervo y el color del registro al que pertenece. --- */
+  var REGISTROS = { evidencia:"--t03", divulgacion:"--t07", testimonio:"--t04", entretenimiento:"--tenue" };
+  var NOMREG    = { evidencia:"Evidencia", divulgacion:"Divulgación", testimonio:"Testimonio", entretenimiento:"Entretenimiento" };
+
+  var TAPAS = {
+    "cambiar-tu-mente":      { t:"Cómo cambiar tu mente",              a:"Michael Pollan",             y:"2018",        r:"divulgacion" },
+    "mente-bajo-plantas":    { t:"Esto es tu mente bajo las plantas",  a:"Michael Pollan",             y:"2021",        r:"divulgacion" },
+    "lsd-hofmann":           { t:"LSD, mi hijo problemático",          a:"Albert Hofmann",             y:"1979",        r:"testimonio" },
+    "puertas-percepcion":    { t:"Las puertas de la percepción",       a:"Aldous Huxley",              y:"1954",        r:"testimonio" },
+    "vida-maria-sabina":     { t:"Vida de María Sabina",               a:"Álvaro Estrada",             y:"1977",        r:"testimonio" },
+    "experimento-psicodelico":{t:"El experimento psicodélico",         a:"Leary, Metzner y Alpert",    y:"1964",        r:"testimonio" },
+    "be-here-now":           { t:"Be Here Now",                        a:"Ram Dass",                   y:"1971",        r:"testimonio" },
+    "pihkal":                { t:"PIHKAL · TIHKAL",                    a:"Alexander y Ann Shulgin",    y:"1991 · 1997", r:"testimonio" },
+    "spirit-molecule":       { t:"DMT: The Spirit Molecule",           a:"Rick Strassman",             y:"2001",        r:"divulgacion" },
+    "explorers-guide":       { t:"The Psychedelic Explorer's Guide",   a:"James Fadiman",              y:"2011",        r:"testimonio" },
+    "manchurian":            { t:"The Search for the Manchurian Candidate", a:"John Marks",            y:"1979",        r:"evidencia" },
+    "kool-aid":              { t:"The Electric Kool-Aid Acid Test",    a:"Tom Wolfe",                  y:"1968",        r:"testimonio" },
+    "plants-of-the-gods":    { t:"Plants of the Gods",                 a:"Schultes, Hofmann y Rätsch", y:"",            r:"divulgacion" },
+    "mescaline-jay":         { t:"Mescaline",                          a:"Mike Jay",                   y:"2019",        r:"evidencia" },
+    "drugs-hot-air":         { t:"Drugs Without the Hot Air",          a:"David Nutt",                 y:"2020",        r:"evidencia" },
+
+    "maria-sabina-pelicula": { t:"María Sabina, mujer espíritu",       a:"Nicolás Echeverría",         y:"1979",        r:"testimonio" },
+    "sunshine-makers":       { t:"The Sunshine Makers",                a:"Cosmo Feilding-Mellen",      y:"2015",        r:"testimonio" },
+    "how-to-change":         { t:"How to Change Your Mind",            a:"Alex Gibney y Michael Pollan", y:"2022",      r:"divulgacion" },
+    "fantastic-fungi":       { t:"Fantastic Fungi",                    a:"Louie Schwartzberg",         y:"2019",        r:"divulgacion" },
+    "dosed":                 { t:"Dosed",                              a:"Tyler Chandler",             y:"2019",        r:"testimonio" },
+    "have-a-good-trip":      { t:"Have a Good Trip",                   a:"Donick Cary",                y:"2020",        r:"entretenimiento" },
+
+    "xamanic":               { t:"Xamanic, camino al despertar",       a:"DMT Creativos",              y:"desde 2023",  r:"testimonio" },
+    "psychedelics-today":    { t:"Psychedelics Today",                 a:"Joe Moore y Kyle Buller",    y:"desde 2016",  r:"divulgacion" },
+    "hamilton-morris":       { t:"The Hamilton Morris Podcast",        a:"Hamilton Morris",            y:"desde 2021",  r:"divulgacion" }
+  };
+
+  function cortar(txt, max){
+    var pal = String(txt).split(/\s+/), ln = [], act = "";
+    for(var i=0;i<pal.length;i++){
+      if(!act){ act = pal[i]; }
+      else if((act + " " + pal[i]).length <= max){ act += " " + pal[i]; }
+      else { ln.push(act); act = pal[i]; }
+    }
+    if(act) ln.push(act);
+    return ln;
+  }
+
+  function tapa(clave){
+    var d = TAPAS[clave];
+    if(!d) return "";
+    var n   = d.t.length;
+    var fs  = n <= 16 ? 22 : n <= 30 ? 18.5 : n <= 48 ? 15 : 12.5;
+    var anc = 132;
+    function reparte(s){ return cortar(d.t, Math.max(9, Math.round(anc / (s * 0.52)))); }
+    var ln = reparte(fs);
+    while(ln.length > 5 && fs > 10){ fs -= 1.5; ln = reparte(fs); }
+    var paso  = fs * 1.18;
+    var la    = cortar(String(d.a).toUpperCase(), 25).slice(0, 2);
+    var altoT = (ln.length - 1) * paso;
+    var alto  = altoT + 20 + (la.length - 1) * 10;
+    var y0    = 126.5 + 0.39 * fs - alto / 2;
+    var tt = ln.map(function(l, k){
+      return '<tspan x="26" y="' + (y0 + k * paso).toFixed(1) + '">' + esc(l) + '</tspan>';
+    }).join("");
+    var yR = y0 + altoT + 13;
+    var ta = la.map(function(l, k){
+      return '<tspan x="26" y="' + (yR + 15 + k * 10).toFixed(1) + '">' + esc(l) + '</tspan>';
+    }).join("");
+    return '<svg class="tapa" viewBox="0 0 180 270" role="img" aria-label="'
+      + esc("Tapa de " + d.t + ", de " + d.a) + '" style="--tono:var(' + (REGISTROS[d.r] || "--t07") + ')">'
+      + '<rect x="0" y="0" width="180" height="270" fill="currentColor" opacity=".11"/>'
+      + '<rect x="0" y="0" width="10" height="270" fill="currentColor" opacity=".82"/>'
+      + '<g filter="url(#lapiz)" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".5">'
+      +   '<rect x="20" y="18" width="146" height="234"/>'
+      +   '<path d="M26 ' + yR.toFixed(1) + ' H120"/>'
+      +   '<path d="M26 228 H160"/>'
+      + '</g>'
+      + '<text class="tt" font-size="' + fs + '">' + tt + '</text>'
+      + '<text class="ta">' + ta + '</text>'
+      + (d.y ? '<text class="ty" x="26" y="243">' + esc(d.y) + '</text>' : "")
+      + '<text class="tr" x="160" y="243" text-anchor="end">' + esc((NOMREG[d.r] || "").toUpperCase()) + '</text>'
+      + '</svg>';
+  }
+
   function marcaDe(d, num, lado){
     var tonos = (TONOS[num] || "--acento") + ",--t02,--t00";
     if(d.retrato)
@@ -184,6 +268,19 @@
       /* el HTML suelto del README (la imagen del logotipo) no se muestra aqui:
          la app ya tiene su propia portada */
       if(/^<[a-zA-Z!\/]/.test(b) && /&gt;$|>$/.test(b)) continue;
+      var mt = /^::tapa\s+([a-z0-9-]+)::$/.exec(b);
+      if(mt){
+        var trozos = [];
+        while(i + 1 < bloques.length){
+          var sg = bloques[i+1].trim();
+          if(!sg){ i++; continue; }
+          if(/^::tapa\s/.test(sg) || /^#{1,6}\s/.test(sg) || /^---+$/.test(sg)) break;
+          trozos.push(sg); i++;
+        }
+        out += '<figure class="obra">' + tapa(mt[1])
+             + '<div class="obratxt">' + md(trozos.join("\n\n")) + '</div></figure>';
+        continue;
+      }
       if(/^---+$/.test(b)){ out += "<hr>"; continue; }
       if(b.indexOf("### ") === 0){ out += "<h3>"+inl(b.slice(4))+"</h3>"; continue; }
       if(b.indexOf("## ") === 0){ out += "<h2>"+inl(b.slice(3))+"</h2>"; continue; }
@@ -204,7 +301,7 @@
 
   /* ---------- texto plano para buscar ---------- */
   function plano(m){
-    return m.replace(/^#\s+.+$/m,"").replace(/\[([^\]]+)\]\([^)]+\)/g,"$1").replace(/[*#>`]/g," ").replace(/\s+/g," ").trim();
+    return m.replace(/^::tapa\s+\S+::$/gm," ").replace(/^#\s+.+$/m,"").replace(/\[([^\]]+)\]\([^)]+\)/g,"$1").replace(/[*#>`]/g," ").replace(/\s+/g," ").trim();
   }
   function pliega(s){
     return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
@@ -655,7 +752,7 @@
     });
     h += "</div>";
     h += '<div class="orden"><h2>Por dónde entrar</h2><p>Si es la primera vez, la <a href="#linea">línea de tiempo</a> y luego el capítulo de <a href="doc:01-precursores-capitulos-albert-hofmann">Hofmann</a>. Si lo que te trajo es la microdosis, empieza por <a href="doc:04-microdosis-evidencia">la evidencia</a> y no por los protocolos: el orden importa. Si lo que te interesa es México, el <a href="doc:01-precursores-capitulos-wasson-y-maria-sabina">capítulo de Wasson y María Sabina</a> y luego el <a href="doc:05-marco-legal-mexico">marco legal</a>.</p></div>';
-    h += '<div class="aviso"><b>Qué no es</b>No es consejo médico ni legal, y no es material de instrucción. En México las sustancias de las que trata están prohibidas. La sección 06 contiene información privada de salud: esta página es privada y el enlace no debería compartirse. El <a href="doc:aviso">aviso completo</a> explica el alcance y los criterios editoriales.</div>';
+    h += '<div class="aviso"><b>Qué no es</b>No es consejo médico ni legal, y no es material de instrucción. En México las sustancias de las que trata están prohibidas. El <a href="doc:aviso">aviso completo</a> explica el alcance y los criterios editoriales.</div>';
     h += "</div>";
     return h;
   }
