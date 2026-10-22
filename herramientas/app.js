@@ -107,10 +107,55 @@
     Array.prototype.forEach.call(document.querySelectorAll("canvas.tela,canvas.cinta"), tela);
     Array.prototype.forEach.call(document.querySelectorAll("canvas.placa"), placa);
   }
+  /* Un emblema por persona, dibujado a linea. Cada objeto sale de un hecho que
+     ya esta escrito en su propia ficha. */
+  var EMBLEMAS = {
+  "albert-hofmann": '<circle cx="26" cy="70" r="16"/><circle cx="74" cy="70" r="16"/><path d="M26 70 L44 44 L62 70 M44 44 L70 44 L74 70 M44 44 L38 36"/><path d="M30 34 L46 34 M70 44 L70 36 M62 34 L78 34"/>',
+  "wasson-y-maria-sabina": '<path d="M40 88 L40 48 L60 48 L60 88 Z"/><path d="M50 48 L50 44"/><path d="M50 44 C42 34 50 28 50 20 C50 28 58 34 50 44 Z"/><path d="M32 88 L68 88"/>',
+  "timothy-leary": '<path d="M50 24 L86 42 L50 60 L14 42 Z"/><path d="M30 50 L30 66 C30 76 70 76 70 66 L70 50"/><path d="M86 42 L86 62"/><circle cx="86" cy="68" r="5"/>',
+  "james-fadiman": '<rect x="14" y="26" width="72" height="60" rx="6"/><path d="M14 44 L86 44 M32 18 L32 32 M68 18 L68 32"/><circle cx="28" cy="58" r="4.5"/><circle cx="50" cy="58" r="4.5" fill="currentColor"/><circle cx="72" cy="58" r="4.5"/><circle cx="28" cy="74" r="4.5" fill="currentColor"/><circle cx="50" cy="74" r="4.5"/><circle cx="72" cy="74" r="4.5"/>',
+  "michael-pollan": '<path d="M50 32 C40 24 22 24 14 28 L14 78 C22 74 40 74 50 82"/><path d="M50 32 C60 24 78 24 86 28 L86 78 C78 74 60 74 50 82"/><path d="M50 32 L50 82"/>',
+  "arthur-heffter": '<circle cx="50" cy="54" r="30"/><path d="M50 54 L50 24 M50 54 L76 39 M50 54 L76 69 M50 54 L50 84 M50 54 L24 69 M50 54 L24 39"/><circle cx="50" cy="36" r="3.4"/><circle cx="64" cy="44" r="3.4"/><circle cx="64" cy="62" r="3.4"/><circle cx="50" cy="71" r="3.4"/><circle cx="36" cy="62" r="3.4"/><circle cx="36" cy="44" r="3.4"/><circle cx="50" cy="54" r="5" fill="currentColor"/>',
+  "werner-stoll": '<rect x="24" y="16" width="54" height="70" rx="3"/><path d="M34 34 L68 34 M34 46 L68 46 M34 58 L58 58 M34 70 L62 70"/>',
+  "humphry-osmond": '<path d="M20 82 C40 70 62 44 80 22"/><path d="M80 22 C78 38 70 50 60 58"/><path d="M20 82 L34 78 M28 72 L38 82"/>',
+  "abram-hoffer": '<rect x="34" y="34" width="32" height="52" rx="5"/><rect x="40" y="20" width="20" height="14" rx="3"/><path d="M50 50 L50 72 M39 61 L61 61"/>',
+  "sidney-cohen": '<path d="M24 34 L24 64 M34 34 L34 64 M44 34 L44 64 M54 34 L54 64 M20 66 L58 32"/><path d="M70 44 L70 64 M80 44 L80 64"/>',
+  "oscar-janiger": '<ellipse cx="50" cy="56" rx="32" ry="24"/><circle cx="62" cy="64" r="6"/><circle cx="36" cy="46" r="4" fill="currentColor"/><circle cx="49" cy="42" r="4" fill="currentColor"/><circle cx="62" cy="47" r="4" fill="currentColor"/>',
+  "betty-eisner": '<circle cx="50" cy="24" r="6"/><circle cx="71" cy="33" r="6"/><circle cx="80" cy="54" r="6"/><circle cx="71" cy="75" r="6"/><circle cx="50" cy="84" r="6"/><circle cx="29" cy="75" r="6"/><circle cx="20" cy="54" r="6"/><circle cx="29" cy="33" r="6"/>',
+  "walter-pahnke": '<path d="M26 86 L26 50 C26 30 74 30 74 50 L74 86"/><path d="M40 86 L40 56 C40 46 60 46 60 56 L60 86"/><path d="M50 18 L50 30 M43 24 L57 24"/>',
+  "stanislav-grof": '<path d="M52.0 50.0 L52.4 50.3 L52.8 50.8 L53.1 51.4 L53.2 52.0 L53.2 52.7 L53.1 53.5 L52.9 54.3 L52.4 55.0 L51.9 55.7 L51.1 56.4 L50.2 56.9 L49.2 57.3 L48.1 57.6 L46.9 57.7 L45.6 57.6 L44.4 57.2 L43.1 56.7 L41.9 55.9 L40.7 54.9 L39.7 53.7 L38.8 52.4 L38.2 50.8 L37.7 49.1 L37.5 47.3 L37.6 45.5 L37.9 43.6 L38.6 41.7 L39.5 39.9 L40.8 38.2 L42.3 36.6 L44.0 35.3 L46.0 34.1 L48.2 33.3 L50.6 32.8 L53.1 32.6 L55.6 32.8 L58.1 33.3 L60.6 34.2 L63.0 35.5 L65.3 37.2 L67.3 39.2 L69.0 41.5 L70.4 44.1 L71.5 47.0 L72.2 50.0 L72.4 53.1 L72.2 56.4 L71.5 59.6 L70.3 62.7 L68.7 65.7 L66.6 68.5 L64.1 71.0 L61.3 73.1 L58.1 74.9 L54.6 76.2 L50.9 77.1 L47.1 77.4 L43.2 77.2 L39.3 76.4 L35.6 75.0 L31.9 73.1 L28.6 70.7 L25.5 67.8 L22.9 64.4 L20.8 60.6 L19.1 56.6 L18.1 52.2 L17.6 47.7 L17.8 43.2 L18.7 38.6 L20.1 34.1 L22.3 29.9 L25.0 25.9 L28.4 22.3 L32.2 19.2 L36.5 16.6 L41.2 14.6 L46.1 13.3 L51.3 12.6 L56.6 12.7 L61.8 13.6 L67.0 15.2 L71.9 17.5 L76.5 20.5 L80.7 24.2 L84.4 28.5 L87.4 33.3 L89.8 38.6 L91.5 44.2 L92.3 50.0 L92.4 56.0 L91.5 61.9 L89.9 67.8 L87.4 73.4"/>',
+  "aldous-huxley": '<path d="M22 88 L22 18 L64 12 L64 88"/><path d="M64 24 L88 16 L88 84 L64 88"/><circle cx="71" cy="54" r="3.5" fill="currentColor"/>',
+  "robert-gordon-wasson": '<rect x="18" y="16" width="64" height="72" rx="3"/><rect x="18" y="16" width="64" height="12" fill="currentColor"/><rect x="28" y="36" width="44" height="28" rx="2"/><path d="M28 44 L40 54 L48 48 L58 58 L72 46"/><path d="M28 74 L72 74 M28 81 L56 81"/>',
+  "ram-dass": '<ellipse cx="50" cy="74" rx="30" ry="11"/><path d="M50 62 C38 50 34 34 50 20 C66 34 62 50 50 62 Z"/><path d="M50 60 C34 56 22 44 26 32 C40 34 50 46 50 60 Z"/><path d="M50 60 C66 56 78 44 74 32 C60 34 50 46 50 60 Z"/>',
+  "terence-mckenna": '<rect x="42" y="16" width="16" height="34" rx="8"/><path d="M32 46 C32 64 68 64 68 46"/><path d="M50 64 L50 80 M36 84 L64 84"/>',
+  "rick-strassman": '<rect x="26" y="42" width="44" height="16" rx="2"/><path d="M14 50 L26 50 M14 40 L14 60 M70 50 L90 50"/><path d="M38 42 L38 50 M48 42 L48 50 M58 42 L58 50"/>',
+  "myron-stolaroff": '<rect x="18" y="36" width="64" height="48" rx="3"/><path d="M14 24 L86 24 L86 36 L14 36 Z"/><path d="M42 50 L58 50"/><path d="M34 36 L34 64 M66 36 L66 64"/>',
+  "al-hubbard": '<rect x="18" y="38" width="64" height="44" rx="5"/><path d="M42 38 L42 28 C42 23 58 23 58 28 L58 38"/><path d="M44 56 L56 56"/>',
+  "rick-doblin": '<rect x="16" y="30" width="68" height="46" rx="3"/><path d="M16 30 L50 56 L84 30"/>',
+  "ken-kesey": '<rect x="12" y="32" width="76" height="38" rx="6"/><rect x="20" y="40" width="15" height="13" rx="2"/><rect x="42" y="40" width="15" height="13" rx="2"/><rect x="64" y="40" width="15" height="13" rx="2"/><circle cx="30" cy="78" r="8"/><circle cx="70" cy="78" r="8"/><path d="M12 32 L88 32"/>',
+  "roland-griffiths": '<rect x="22" y="20" width="56" height="68" rx="4"/><rect x="40" y="13" width="20" height="11" rx="3"/><path d="M38 44 L70 44 M38 58 L70 58 M38 72 L70 72"/><path d="M28 40 L32 46 L38 36"/>',
+  "robin-carhart-harris": '<path d="M64 86 C64 62 76 56 74 42 C72 24 52 16 40 24 C26 32 24 48 30 58 L24 64 L32 66 L32 78 C32 84 42 86 48 84"/><path d="M40 48 C46 40 52 54 58 46"/>',
+  "david-nutt": '<path d="M50 18 L50 70 M34 82 L66 82 M50 70 L40 82 M50 70 L60 82"/><path d="M18 32 L82 32"/><path d="M10 34 C12 48 28 48 30 34"/><path d="M70 34 C72 48 88 48 90 34"/><path d="M20 32 L20 36 M80 32 L80 36"/>',
+  "charles-grob": '<path d="M28 16 L72 16 L52 50 L72 84 L28 84 L48 50 Z"/><path d="M22 16 L78 16 M22 84 L78 84"/><path d="M38 30 L62 30 M42 74 L58 74"/>',
+  "stephen-ross-y-jeffrey-guss": '<path d="M26 74 L26 40 M26 58 L46 58 M46 58 L46 74"/><path d="M74 74 L74 40 M74 58 L54 58 M54 58 L54 74"/>',
+  "matthew-johnson": '<rect x="18" y="48" width="54" height="13" rx="2"/><path d="M60 48 L60 61"/><path d="M78 44 C84 38 78 32 84 26"/><path d="M16 76 L84 32"/>',
+  "paul-stamets": '<circle cx="50" cy="48" r="26"/><path d="M34 52 L34 72 M42 50 L42 78 M50 50 L50 82 M58 50 L58 78 M66 52 L66 72"/>',
+  "balazs-szigeti": '<rect x="14" y="28" width="72" height="18" rx="9"/><path d="M50 28 L50 46"/><rect x="14" y="58" width="72" height="18" rx="9"/><path d="M50 58 L50 76"/>',
+  "alexander-y-ann-shulgin": '<path d="M40 18 L40 40 L22 78 C19 84 23 88 29 88 L71 88 C77 88 81 84 78 78 L60 40 L60 18"/><path d="M35 18 L65 18 M29 68 L71 68"/><circle cx="43" cy="77" r="3"/><circle cx="56" cy="81" r="2.5"/>',
+  "franz-vollenweider": '<circle cx="30" cy="50" r="17"/><circle cx="30" cy="50" r="7"/><path d="M47 50 L86 50 M76 50 L76 63 M64 50 L64 60"/>'
+  };
+
   function esPersona(d){ return d.ruta.indexOf("/fichas/") > 0 || d.ruta.indexOf("/capitulos/") > 0; }
+  function tallo(d){ var p = d.ruta.split("/").pop(); return p.slice(0, -3); }
   function marcaDe(d, num, lado){
     var tonos = (TONOS[num] || "--acento") + ",--t02,--t00";
-    if(d.retrato) return '<img class="placa" src="' + esc(d.retrato) + '" alt="Retrato de ' + esc(d.t) + '" width="' + lado + '" height="' + lado + '">';
+    if(d.retrato)
+      return '<img class="placa" src="' + esc(d.retrato) + '" alt="Retrato de ' + esc(d.t) + '" width="' + lado + '" height="' + lado + '">';
+    var em = EMBLEMAS[tallo(d)];
+    if(em)
+      return '<span class="emblema" role="img" aria-label="Emblema de ' + esc(d.t) + '">'
+           + '<svg viewBox="0 0 100 100"><g filter="url(#lapiz)" fill="none" stroke="currentColor" '
+           + 'stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">' + em + "</g></svg></span>";
     return '<canvas class="placa" data-nombre="' + esc(d.t) + '" data-tonos="' + tonos + '" aria-hidden="true"></canvas>';
   }
 
@@ -657,8 +702,9 @@
     }
     var cabeza = "";
     if(s && esPersona(d)){
+      var pie = d.retrato ? "" : (EMBLEMAS[tallo(d)] ? "Emblema" : "Placa generada");
       cabeza = '<div class="retrato">' + marcaDe(d, s.n, 104)
-             + (d.retrato ? "" : '<span class="pie-placa">Placa generada</span>') + "</div>";
+             + (pie ? '<span class="pie-placa">' + pie + "</span>" : "") + "</div>";
     }
     return '<div' + tn + ">" + migas + cabeza + '<div class="doc">' + cuerpo + "</div>" + menc + vecinos + "</div>";
   }
