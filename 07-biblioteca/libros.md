@@ -1,6 +1,6 @@
 # Libros
 
-Catorce títulos. Están ordenados por utilidad, no por importancia: primero los dos que sirven de puerta de entrada, después las fuentes escritas por quienes estuvieron ahí, y al final la historia y el contexto. Cada entrada lleva su registro, porque un testimonio de 1954 y una revisión de 2024 no se leen igual.
+Quince entradas. Están ordenadas por utilidad, no por importancia: primero los dos que sirven de puerta de entrada, después las fuentes escritas por quienes estuvieron ahí, y al final la historia y el contexto. Cada entrada lleva su registro, porque un testimonio de 1954 y una revisión de 2024 no se leen igual.
 
 [Volver a Biblioteca](README.md)
 
@@ -40,7 +40,7 @@ Son los libros escritos por quienes estuvieron ahí. Ninguno es evidencia en sen
 
 **Mescaline: A Global History of the First Psychedelic**, de Mike Jay, 2019. *Evidencia.* La historia de la mescalina desde Heffter hasta hoy, con cuidado poco común en el tratamiento de las comunidades indígenas. Es el mejor libro sobre el psicodélico que el renacimiento actual dejó fuera.
 
-**Drugs Without the Hot Air**, de David Nutt. *Evidencia.* El argumento de que la clasificación legal de las sustancias no corresponde a su daño real, escrito por quien perdió su puesto de asesor del gobierno británico por sostenerlo. Ver su [ficha](../01-precursores/fichas/david-nutt.md).
+**Drugs Without the Hot Air**, de David Nutt, segunda edición de 2020. *Evidencia.* El argumento de que la clasificación legal de las sustancias no corresponde a su daño real, escrito por quien perdió su puesto de asesor del gobierno británico por sostenerlo. Ver su [ficha](../01-precursores/fichas/david-nutt.md).
 
 ---
 
