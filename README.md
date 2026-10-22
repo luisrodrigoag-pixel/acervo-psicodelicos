@@ -1,3 +1,5 @@
+<img src="recursos/logotipo.jpg" alt="Expedientes psicodélicos" width="260">
+
 # Expediente psicodélicos
 
 Acervo documental de consulta sobre psicodélicos: quiénes abrieron el campo, qué pasó con él, qué dice la evidencia hoy, y qué dice la ley en México.

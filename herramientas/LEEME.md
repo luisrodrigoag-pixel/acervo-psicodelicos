@@ -23,7 +23,7 @@ Para verla en local hace falta un servidor, porque el service worker no funciona
 - **Diseño**: `herramientas/estilo.css`
 - **Comportamiento** (buscador, rutas, línea de tiempo): `herramientas/app.js`
 - **Cabecera del documento**: `herramientas/plantilla.html` y `herramientas/cuerpo.html`
-- **Icono**: reemplazar los tres PNG de `herramientas/iconos/` conservando los nombres y los tamaños (192, 512 y 180 píxeles, cuadrados, sin esquinas redondeadas, porque iOS aplica su propia máscara). No hace falta cambiar nada más.
+- **Icono**: reemplazar los cuatro PNG de `herramientas/iconos/` conservando los nombres y los tamaños (180, 192, 512 y 1024 píxeles, cuadrados y a sangre, sin esquinas redondeadas, porque iOS y macOS aplican su propia máscara). En `recursos/` hay además una variante con esquinas redondeadas y margen, por si se quiere usar como icono manual en el Dock, y el logotipo completo para el README y la vista previa social del repositorio.
 
 ## Despliegue
 
