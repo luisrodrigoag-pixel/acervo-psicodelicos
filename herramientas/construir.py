@@ -23,6 +23,19 @@ SECCIONES = [
     ("99-bibliografia",        "99", "Bibliografía",       "Todas las fuentes en un solo lugar."),
 ]
 RAIZ_DOCS = ["README.md", "AVISO.md"]
+RETRATOS = os.path.join(RAIZ, "recursos", "retratos")
+EXT_IMG = (".jpg", ".jpeg", ".png", ".webp")
+
+
+def retrato_de(ruta_md):
+    """Si existe recursos/retratos/<nombre>.jpg, esa imagen sustituye a la placa."""
+    if not os.path.isdir(RETRATOS):
+        return ""
+    tallo = os.path.basename(ruta_md)[:-3]
+    for ext in EXT_IMG:
+        if os.path.exists(os.path.join(RETRATOS, tallo + ext)):
+            return "retratos/" + tallo + ext
+    return ""
 
 
 def slug(p):
@@ -103,6 +116,7 @@ def construir_datos():
             "t": titulo(md, r), "md": md, "pal": len(md.split()),
             "corte": mc.group(1).strip().rstrip(".") if mc else "",
             "bajada": bajada(md),
+            "retrato": retrato_de(r),
         })
 
     tl = [d for d in docs if d["ruta"].endswith("linea-de-tiempo.md")]
@@ -189,14 +203,28 @@ def main():
 
     # la version para el publicador de artefactos: sin esqueleto, sin service worker
     sin_sw = js.split("/* ---------- actualizacion automatica")[0]
+    sin_retratos = json.loads(json_datos)
+    for d in sin_retratos["docs"]:
+        d["retrato"] = ""
+    json_artefacto = json.dumps(sin_retratos, ensure_ascii=False, separators=(",", ":"))
     artefacto = ('<title>Expedientes psicodélicos</title>\n'
                  '<meta name="claude:viewport-fit-sides" content="cover">\n'
                  '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
                  '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chicle&family=Spectral:ital,wght@0,400;0,600;1,400'
                  '&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">\n'
                  "<style>\n" + css + "\n</style>\n\n" + cuerpo +
-                 "\n<script>window.__DATOS__ = " + json_datos + ";</script>\n<script>\n" + sin_sw + "\n</script>\n")
+                 "\n<script>window.__DATOS__ = " + json_artefacto + ";</script>\n<script>\n" + sin_sw + "\n</script>\n")
     open(os.path.join(DIST, "artefacto.html"), "w", encoding="utf-8").write(artefacto)
+
+    if os.path.isdir(RETRATOS):
+        destino = os.path.join(DIST, "retratos")
+        os.makedirs(destino, exist_ok=True)
+        n = 0
+        for f in sorted(os.listdir(RETRATOS)):
+            if f.lower().endswith(EXT_IMG):
+                shutil.copy(os.path.join(RETRATOS, f), os.path.join(destino, f))
+                n += 1
+        print("retratos:    %d" % n)
 
     sw = open(os.path.join(AQUI, "sw.js"), encoding="utf-8").read().replace("__VERSION__", version)
     open(os.path.join(DIST, "sw.js"), "w", encoding="utf-8").write(sw)

@@ -392,3 +392,24 @@ body::after{   /* velo que suaviza el campo y mantiene el contraste del riel */
   border-radius:8px; max-width:240px; }
 .globo[data-ver="si"]{ opacity:1; }
 .globo .g-val{ font-family:var(--dato); font-variant-numeric:tabular-nums; }
+
+/* placas y retratos */
+.ficha.conplaca{ display:flex; gap:13px; align-items:flex-start; }
+.ficha .cuerpoficha{ min-width:0; }
+.ficha.conplaca .placa{ flex:0 0 auto; width:64px; height:64px; border-radius:10px; display:block;
+  border:1px solid var(--linea); object-fit:cover; }
+.retrato{ margin:0 0 16px; }
+.retrato .placa{ width:104px; height:104px; border-radius:12px; display:block;
+  border:1px solid var(--linea); object-fit:cover; }
+.retrato .pie-placa{ display:block; margin-top:6px; font-family:var(--dato); font-size:.66rem;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--tenue); }
+:root[data-dosis="sobrio"] .placa{ filter:saturate(.4) opacity(.8); }
+@media(max-width:430px){
+  .ficha.conplaca .placa{ width:52px; height:52px; }
+  .retrato .placa{ width:84px; height:84px; }
+}
+
+/* en la vista de seccion el rotulo es texto, no chip: la placa ya identifica */
+.ficha.ensec .cn{ background:none; color:var(--tono,var(--acento)); padding:0;
+  font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; font-weight:600; }
+.ficha.ensec b{ margin-top:4px; }

@@ -1,0 +1,14 @@
+RETRATOS
+--------
+Si dejas aquí una imagen con el mismo nombre que el archivo de la ficha, la app
+la usa en lugar de la placa generada.
+
+  recursos/retratos/timothy-leary.jpg   ->  01-precursores/capitulos/timothy-leary.md
+  recursos/retratos/betty-eisner.png    ->  01-precursores/fichas/betty-eisner.md
+
+Formatos: jpg, jpeg, png o webp. Cuadradas, de 400 píxeles o más.
+El constructor las copia solas; no hay que tocar nada de código.
+
+Antes de poner una, verifica su licencia. Casi toda la fotografía de estas
+personas es de agencia y sigue protegida; que una página diga "dominio público"
+no es un título. Esta carpeta está vacía a propósito.

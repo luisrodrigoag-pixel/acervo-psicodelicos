@@ -61,8 +61,57 @@
     }
     g.globalAlpha = 1;
   }
+  function semillaDe(txt){
+    var h = 2166136261 >>> 0;
+    for(var i = 0; i < txt.length; i++){ h ^= txt.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    return h >>> 0;
+  }
+  /* Placa: floracion radial entre impresion de esporas y caleidoscopio.
+     Cada ficha recibe una distinta, derivada de su propio nombre. */
+  function placa(cv){
+    var lado = cv.clientWidth || 96;
+    if(!lado) return;
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(lado * dpr); cv.height = Math.round(lado * dpr);
+    var g = cv.getContext("2d");
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var r = azar(semillaDe(cv.getAttribute("data-nombre") || "placa"));
+    var colores = (cv.getAttribute("data-tonos") || "--t01,--t02,--t00").split(",").map(leeColor);
+    g.fillStyle = "#130a20"; g.fillRect(0, 0, lado, lado);
+    var cx = lado / 2, cy = lado / 2, R = lado * 0.46;
+    var pliegues = 5 + Math.floor(r() * 7), anillos = 7 + Math.floor(r() * 5), giro = r() * 6.2832;
+    for(var i = anillos; i >= 1; i--){
+      var base = R * (i / anillos);
+      var amp = base * (0.10 + r() * 0.26);
+      var fase = giro + i * (0.18 + r() * 0.5);
+      var pl = pliegues + (i % 2 ? 0 : 1);
+      g.beginPath();
+      for(var a = 0; a <= 360; a += 2){
+        var th = a * Math.PI / 180;
+        var rad = base + Math.sin(th * pl + fase) * amp + Math.sin(th * pl * 2 + fase * 1.7) * amp * 0.3;
+        var x = cx + Math.cos(th) * rad, y = cy + Math.sin(th) * rad;
+        if(a === 0) g.moveTo(x, y); else g.lineTo(x, y);
+      }
+      g.closePath();
+      g.strokeStyle = colores[i % colores.length];
+      g.globalAlpha = 0.45 + r() * 0.5;
+      g.lineWidth = 1 + r() * 2.6;
+      g.lineJoin = "round";
+      g.stroke();
+    }
+    g.globalAlpha = 1;
+    g.beginPath(); g.arc(cx, cy, lado * 0.035, 0, 6.2832);
+    g.fillStyle = colores[0]; g.fill();
+  }
   function pintarTelas(){
     Array.prototype.forEach.call(document.querySelectorAll("canvas.tela,canvas.cinta"), tela);
+    Array.prototype.forEach.call(document.querySelectorAll("canvas.placa"), placa);
+  }
+  function esPersona(d){ return d.ruta.indexOf("/fichas/") > 0 || d.ruta.indexOf("/capitulos/") > 0; }
+  function marcaDe(d, num, lado){
+    var tonos = (TONOS[num] || "--acento") + ",--t02,--t00";
+    if(d.retrato) return '<img class="placa" src="' + esc(d.retrato) + '" alt="Retrato de ' + esc(d.t) + '" width="' + lado + '" height="' + lado + '">';
+    return '<canvas class="placa" data-nombre="' + esc(d.t) + '" data-tonos="' + tonos + '" aria-hidden="true"></canvas>';
   }
 
   /* ---------- almacenamiento tolerante ---------- */
@@ -606,7 +655,12 @@
             return '<li><a href="#' + o.id + '">' + esc(o.t) + "</a></li>";
           }).join("") + "</ul></div>";
     }
-    return '<div' + tn + ">" + migas + '<div class="doc">' + cuerpo + "</div>" + menc + vecinos + "</div>";
+    var cabeza = "";
+    if(s && esPersona(d)){
+      cabeza = '<div class="retrato">' + marcaDe(d, s.n, 104)
+             + (d.retrato ? "" : '<span class="pie-placa">Placa generada</span>') + "</div>";
+    }
+    return '<div' + tn + ">" + migas + cabeza + '<div class="doc">' + cuerpo + "</div>" + menc + vecinos + "</div>";
   }
 
   function vistaSec(num){
@@ -624,10 +678,15 @@
       + '<div class="rejilla">';
     lista.forEach(function(d){
       var et = d.ruta.split("/").pop() === "README.md" ? "Índice de la sección" : d.t;
-      h += '<a class="ficha'+(s.n==="06"?" privada":"")+'" href="#'+d.id+'">'
-        + '<span class="cn">'+esc(d.ruta.split("/").slice(1).join("/"))+"</span><b>"+esc(et)+"</b>"
+      var conPlaca = esPersona(d);
+      var partes = d.ruta.split("/");
+      var rotulo = conPlaca ? (partes[1] === "capitulos" ? "Capítulo" : "Ficha")
+                            : partes.slice(1).join("/");
+      h += '<a class="ficha ensec'+(s.n==="06"?" privada":"")+(conPlaca?" conplaca":"")+'" href="#'+d.id+'">'
+        + (conPlaca ? marcaDe(d, s.n, 64) : "")
+        + '<div class="cuerpoficha"><span class="cn">'+esc(rotulo)+"</span><b>"+esc(et)+"</b>"
         + "<span>"+esc(d.bajada)+"</span>"
-        + '<span class="cuenta">'+d.pal.toLocaleString("es-MX")+" palabras</span></a>";
+        + '<span class="cuenta">'+d.pal.toLocaleString("es-MX")+" palabras</span></div></a>";
     });
     return h + "</div></div>";
   }
