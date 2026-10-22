@@ -151,10 +151,10 @@ def main():
 
     # la version para el publicador de artefactos: sin esqueleto, sin service worker
     sin_sw = js.split("/* ---------- actualizacion automatica")[0]
-    artefacto = ('<title>Expediente psicodélicos</title>\n'
+    artefacto = ('<title>Expedientes psicodélicos</title>\n'
                  '<meta name="claude:viewport-fit-sides" content="cover">\n'
                  '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-                 '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400'
+                 '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chicle&family=Spectral:ital,wght@0,400;0,600;1,400'
                  '&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">\n'
                  "<style>\n" + css + "\n</style>\n\n" + cuerpo +
                  "\n<script>window.__DATOS__ = " + json_datos + ";</script>\n<script>\n" + sin_sw + "\n</script>\n")

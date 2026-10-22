@@ -10,6 +10,61 @@
   var $ = function(s){ return document.querySelector(s); };
   var NOMBRES = { capitulos: "Capítulos", fichas: "Fichas" };
 
+  /* ---------- tono por seccion ---------- */
+  var TONOS = { "00":"--t00", "01":"--t01", "02":"--t02", "03":"--t03",
+                "04":"--t04", "05":"--t05", "06":"--ocre", "99":"--t99" };
+  function tono(num){ return "var(" + (TONOS[num] || "--acento") + ")"; }
+  function numDeCarpeta(carpeta){
+    for(var i=0;i<D.secs.length;i++) if(D.secs[i].carpeta === carpeta) return D.secs[i].n;
+    return null;
+  }
+  function leeColor(nombre){
+    return getComputedStyle(document.documentElement).getPropertyValue(nombre).trim() || "#1C5A4C";
+  }
+
+  /* ---------- tela: patron psicodelico dibujado, distinto por seccion ---------- */
+  function azar(semilla){
+    var s = semilla >>> 0;
+    return function(){ s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+  }
+  function tela(cv){
+    if(!cv || !cv.getContext) return;
+    var ancho = cv.clientWidth || 600, alto = cv.clientHeight || 160;
+    if(!ancho || !alto) return;
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(ancho * dpr); cv.height = Math.round(alto * dpr);
+    var g = cv.getContext("2d");
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var r = azar(parseInt(cv.getAttribute("data-semilla"), 10) || 7);
+    var claves = (cv.getAttribute("data-tonos") || "--t01,--t02,--t00").split(",");
+    var colores = claves.map(leeColor);
+    g.fillStyle = leeColor("--sobre-acento") === "#FFFFFF" ? "#140A22" : "#0B0F12";
+    g.fillStyle = "#130a20";
+    g.fillRect(0, 0, ancho, alto);
+    var n = Math.max(14, Math.round(alto / 7));
+    for(var i = 0; i < n; i++){
+      var t = i / (n - 1);
+      var amp = alto * (0.10 + r() * 0.30);
+      var fase = r() * 6.283, frec = 0.006 + r() * 0.016;
+      g.beginPath();
+      for(var x = 0; x <= ancho; x += 3){
+        var y = alto * t
+              + Math.sin(x * frec + fase) * amp * Math.sin(x * 0.0023 + fase * 0.5)
+              + Math.sin(x * frec * 2.3 + fase) * amp * 0.22;
+        if(x === 0) g.moveTo(x, y); else g.lineTo(x, y);
+      }
+      g.strokeStyle = colores[i % colores.length];
+      g.globalAlpha = 0.5 + r() * 0.45;
+      g.lineWidth = 1.2 + r() * 3.2;
+      g.lineCap = "round";
+      g.stroke();
+    }
+    g.globalAlpha = 1;
+  }
+  function pintarTelas(){
+    Array.prototype.forEach.call(document.querySelectorAll("canvas.tela,canvas.cinta"), tela);
+  }
+
   /* ---------- almacenamiento tolerante ---------- */
   function leer(k, def){ try{ var v = localStorage.getItem(k); return v === null ? def : v; }catch(e){ return def; } }
   function guardar(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
@@ -109,7 +164,7 @@
     D.secs.forEach(function(s){
       var lista = porSec[s.carpeta] || [];
       if(!lista.length) return;
-      h += '<div class="grupo"><div class="cab"><span class="cn">'+s.n+'</span><a href="#s'+s.n+'">'+esc(s.t)+"</a></div><ul>";
+      h += '<div class="grupo" style="--tono:'+tono(s.n)+'"><div class="cab"><span class="cn">'+s.n+'</span><a href="#s'+s.n+'">'+esc(s.t)+"</a></div><ul>";
       var subActual = null;
       lista.forEach(function(d){
         var partes = d.ruta.split("/");
@@ -128,8 +183,10 @@
 
   /* ---------- vistas ---------- */
   function vistaPortada(){
-    var h = '<div class="portada"><span class="sello">Acervo documental · privado</span>'
-      + "<h1>Expediente psicodélicos</h1>"
+    var h = '<div class="portada">'
+      + '<div class="hero"><canvas class="tela" data-semilla="1897" data-tonos="--t01,--t04,--t02,--t00,--t99"></canvas>'
+      + '<div class="rotulo"><h1>Expedientes psicodélicos</h1></div></div>'
+      + '<span class="sello">Acervo documental</span>'
       + '<p class="entrada">Quiénes abrieron el campo, qué pasó con él, qué dice la evidencia hoy y qué dice la ley en México. Donde no hay evidencia, lo dice.</p>'
       + '<div class="cifras">'
       + '<div><span class="n">'+D.n+'</span><span class="e">documentos</span></div>'
@@ -142,7 +199,8 @@
       var lista = porSec[s.carpeta] || [];
       if(!lista.length) return;
       var pal = lista.reduce(function(a,d){ return a + d.pal; }, 0);
-      h += '<a class="ficha'+(s.n==="06"?" privada":"")+'" href="#s'+s.n+'">'
+      h += '<a class="ficha'+(s.n==="06"?" privada":"")+'" href="#s'+s.n+'" style="--tono:'+tono(s.n)+'">'
+        + '<canvas class="cinta" data-semilla="'+(parseInt(s.n,10)+13)+'" data-tonos="'+(TONOS[s.n]||"--acento")+',--t02,--t00"></canvas>'
         + '<span class="cn">'+s.n+"</span><b>"+esc(s.t)+"</b><span>"+esc(s.d)+"</span>"
         + '<span class="cuenta">'+lista.length+" doc · "+pal.toLocaleString("es-MX")+" palabras</span></a>";
     });
@@ -172,7 +230,8 @@
         + (sig ? '<a href="#'+sig.id+'">'+esc(sig.t)+" →</a>" : "<span></span>")
         + "</div>";
     }
-    return migas + '<div class="doc">' + md(d.md) + "</div>" + vecinos;
+    var tn = s ? ' style="--tono:' + tono(s.n) + '"' : "";
+    return '<div' + tn + ">" + migas + '<div class="doc">' + md(d.md) + "</div>" + vecinos + "</div>";
   }
 
   function vistaSec(num){
@@ -180,7 +239,10 @@
     if(!s) return '<div class="vacio">Esa sección no existe.</div>';
     var lista = porSec[s.carpeta] || [];
     var h = '<div class="migas"><a href="#inicio">Portada</a><span>/</span><span>'+s.n+"</span></div>"
-      + '<div class="portada"><span class="sello">Sección '+s.n+'</span><h1>'+esc(s.t)+"</h1>"
+      + '<div class="portada" style="--tono:'+tono(s.n)+'">'
+      + '<div class="hero"><canvas class="tela" data-semilla="'+(parseInt(s.n,10)*37+5)+'" data-tonos="'+(TONOS[s.n]||"--acento")+',--t02,--t00,--t04"></canvas>'
+      + '<div class="rotulo"><h1>'+esc(s.t)+'</h1></div></div>'
+      + '<span class="sello">Sección '+s.n+'</span>'
       + '<p class="entrada">'+esc(s.d)+"</p>"
       + (s.n === "06" ? '<div class="aviso"><b>Privado</b>Información de salud y de hábitos. No forma parte del acervo y no debería salir de aquí.</div>' : "")
       + '<div class="rejilla">';
@@ -197,7 +259,7 @@
   var eraActiva = "todas";
   function vistaLinea(){
     var h = '<div class="migas"><a href="#inicio">Portada</a><span>/</span><span>00-referencia/linea-de-tiempo.md</span></div>'
-      + '<div class="linea"><h1>Línea de tiempo</h1>'
+      + '<div class="linea" style="--tono:var(--t02)"><h1>Línea de tiempo</h1>'
       + '<p class="entrada">De 1897 a 2026. Las fechas que importan, con el dato mínimo para situarlas.</p>'
       + '<div class="filtros" id="filtros"><button type="button" data-era="todas">Todas</button>';
     D.eras.forEach(function(e){
@@ -243,6 +305,7 @@
     else { html = vistaPortada(); }
     $("#vista").innerHTML = html;
     pintarRiel(activo);
+    pintarTelas();
     if(hash === "linea") conectarFiltros();
     window.scrollTo(0, 0);
     cerrarRiel();
@@ -256,6 +319,7 @@
         eraActiva = b.getAttribute("data-era");
         $("#vista").innerHTML = vistaLinea();
         conectarFiltros();
+        pintarTelas();
       });
     });
   }
@@ -315,6 +379,7 @@
       if(q.length < 2){ pintar(); return; }
       $("#vista").innerHTML = vistaBuscar(q);
       pintarRiel(null);
+      pintarTelas();
       window.scrollTo(0,0);
     }, 160);
   });
@@ -333,6 +398,15 @@
     if(href.indexOf("sec:") === 0){ e.preventDefault(); caja.value=""; location.hash = "s" + href.slice(4); return; }
     if(href.charAt(0) === "#"){ caja.value = ""; }
   });
+
+  var relojTela = null;
+  window.addEventListener("resize", function(){
+    clearTimeout(relojTela); relojTela = setTimeout(pintarTelas, 180);
+  });
+  if(window.matchMedia){
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", pintarTelas);
+  }
 
   window.addEventListener("hashchange", pintar);
 
