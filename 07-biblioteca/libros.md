@@ -62,7 +62,7 @@ Son los libros escritos por quienes estuvieron ahí. Ninguno es evidencia en sen
 
 ::tapa plants-of-the-gods::
 
-**Plants of the Gods**, de Richard Evans Schultes, Albert Hofmann y Christian Rätsch. *Divulgación.* El catálogo etnobotánico de referencia. Útil justamente para lo que el acervo no cubre: la extensión real del uso ritual de plantas en el mundo.
+**Plants of the Gods**, de Richard Evans Schultes y Albert Hofmann, 1979; Christian Rätsch entra como coautor en la edición revisada. *Divulgación.* El catálogo etnobotánico de referencia. Útil justamente para lo que el acervo no cubre: la extensión real del uso ritual de plantas en el mundo.
 
 ::tapa mescaline-jay::
 

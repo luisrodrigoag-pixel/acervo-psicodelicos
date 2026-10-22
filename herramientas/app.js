@@ -162,12 +162,12 @@
     "vida-maria-sabina":     { t:"Vida de María Sabina",               a:"Álvaro Estrada",             y:"1977",        r:"testimonio" },
     "experimento-psicodelico":{t:"El experimento psicodélico",         a:"Leary, Metzner y Alpert",    y:"1964",        r:"testimonio" },
     "be-here-now":           { t:"Be Here Now",                        a:"Ram Dass",                   y:"1971",        r:"testimonio" },
-    "pihkal":                { t:"PIHKAL · TIHKAL",                    a:"Alexander y Ann Shulgin",    y:"1991 · 1997", r:"testimonio" },
+    "pihkal":                { t:"PIHKAL y TIHKAL",                    a:"Alexander y Ann Shulgin",    y:"1991 · 1997", r:"testimonio" },
     "spirit-molecule":       { t:"DMT: The Spirit Molecule",           a:"Rick Strassman",             y:"2001",        r:"divulgacion" },
     "explorers-guide":       { t:"The Psychedelic Explorer's Guide",   a:"James Fadiman",              y:"2011",        r:"testimonio" },
     "manchurian":            { t:"The Search for the Manchurian Candidate", a:"John Marks",            y:"1979",        r:"evidencia" },
     "kool-aid":              { t:"The Electric Kool-Aid Acid Test",    a:"Tom Wolfe",                  y:"1968",        r:"testimonio" },
-    "plants-of-the-gods":    { t:"Plants of the Gods",                 a:"Schultes, Hofmann y Rätsch", y:"",            r:"divulgacion" },
+    "plants-of-the-gods":    { t:"Plants of the Gods",                 a:"Schultes y Hofmann",         y:"1979",        r:"divulgacion" },
     "mescaline-jay":         { t:"Mescaline",                          a:"Mike Jay",                   y:"2019",        r:"evidencia" },
     "drugs-hot-air":         { t:"Drugs Without the Hot Air",          a:"David Nutt",                 y:"2020",        r:"evidencia" },
 
@@ -182,6 +182,70 @@
     "psychedelics-today":    { t:"Psychedelics Today",                 a:"Joe Moore y Kyle Buller",    y:"desde 2016",  r:"divulgacion" },
     "hamilton-morris":       { t:"The Hamilton Morris Podcast",        a:"Hamilton Morris",            y:"desde 2021",  r:"divulgacion" }
   };
+
+
+  /* Motivos de las tapas. Trece reutilizan el emblema del autor que ya vive en
+     su ficha, para que el libro y la persona lleven la misma marca. Los once
+     restantes se dibujan aqui, en la misma caja de 100 por 100 y el mismo trazo. */
+  var EMBREF = {
+    "cambiar-tu-mente":"michael-pollan", "lsd-hofmann":"albert-hofmann",
+    "puertas-percepcion":"aldous-huxley", "vida-maria-sabina":"wasson-y-maria-sabina",
+    "experimento-psicodelico":"timothy-leary", "be-here-now":"ram-dass",
+    "pihkal":"alexander-y-ann-shulgin", "spirit-molecule":"rick-strassman",
+    "explorers-guide":"james-fadiman", "kool-aid":"ken-kesey",
+    "mescaline-jay":"arthur-heffter", "drugs-hot-air":"david-nutt",
+    "fantastic-fungi":"paul-stamets"
+  };
+
+  var MOTIVOS = {
+    /* capsula de amapola: las tres plantas del libro */
+    "mente-bajo-plantas": '<path d="M50 32 C36 32 32 46 36 58 C40 70 50 74 50 74 C50 74 60 70 64 58 C68 46 64 32 50 32 Z"/>'
+      + '<path d="M50 32 V22 M41 28 L36 19 M59 28 L64 19"/><path d="M50 74 V90 M50 82 C42 82 38 78 36 74 M50 80 C58 80 62 76 64 72"/>',
+    /* expediente con dos renglones tachados: los papeles que sobrevivieron a MKUltra */
+    "manchurian": '<rect x="24" y="12" width="52" height="76" rx="3"/>'
+      + '<path d="M34 30 H66 M34 56 H64"/>'
+      + '<rect x="34" y="40" width="28" height="8" fill="currentColor" stroke="none"/>'
+      + '<rect x="34" y="66" width="18" height="8" fill="currentColor" stroke="none"/>',
+    /* pliego de herbario con su etiqueta */
+    "plants-of-the-gods": '<rect x="18" y="12" width="64" height="76"/>'
+      + '<path d="M50 76 V36 M50 68 C42 64 38 56 36 48 M50 60 C58 56 62 48 64 40"/>'
+      + '<path d="M50 36 C44 28 46 20 50 16 C54 20 56 28 50 36 Z"/>'
+      + '<rect x="56" y="70" width="20" height="10"/>',
+    /* camara de cine de dos bobinas */
+    "maria-sabina-pelicula": '<rect x="16" y="46" width="46" height="30" rx="3"/>'
+      + '<path d="M62 56 L82 46 V76 L62 66 Z"/><circle cx="29" cy="30" r="12"/><circle cx="55" cy="30" r="12"/>'
+      + '<path d="M29 42 V46 M55 42 V46"/>',
+    /* sol */
+    "sunshine-makers": '<circle cx="50" cy="50" r="18"/>'
+      + '<path d="M50 20 V8 M50 92 V80 M20 50 H8 M92 50 H80 M28 28 L20 20 M72 72 L80 80 M72 28 L80 20 M28 72 L20 80"/>',
+    /* pantalla */
+    "how-to-change": '<rect x="14" y="20" width="72" height="48" rx="4"/>'
+      + '<path d="M34 82 H66 M50 68 V82"/><path d="M26 54 C34 34 42 58 50 42 C56 30 64 46 74 36"/>',
+    /* capsula */
+    "dosed": '<g transform="rotate(-38 50 50)"><rect x="24" y="38" width="52" height="24" rx="12"/><path d="M50 38 V62"/></g>',
+    /* carita: lo unico de la lista que esta hecho para divertir */
+    "have-a-good-trip": '<circle cx="50" cy="50" r="30"/>'
+      + '<circle cx="39" cy="43" r="3.4" fill="currentColor" stroke="none"/>'
+      + '<circle cx="61" cy="43" r="3.4" fill="currentColor" stroke="none"/>'
+      + '<path d="M34 60 C40 70 60 70 66 60"/>',
+    /* microfono */
+    "xamanic": '<rect x="40" y="14" width="20" height="38" rx="10"/>'
+      + '<path d="M28 46 A22 22 0 0 0 72 46"/><path d="M50 68 V84 M36 84 H64"/>',
+    /* audifonos */
+    "psychedelics-today": '<path d="M22 58 V48 A28 28 0 0 1 78 48 V58"/>'
+      + '<rect x="12" y="54" width="18" height="28" rx="8"/><rect x="70" y="54" width="18" height="28" rx="8"/>',
+    /* matraz */
+    "hamilton-morris": '<path d="M42 16 V40 L22 78 A7 7 0 0 0 28 88 H72 A7 7 0 0 0 78 78 L58 40 V16 Z"/>'
+      + '<path d="M38 16 H62 M31 64 H69"/>'
+  };
+
+  function motivo(clave){
+    var m = MOTIVOS[clave] || EMBLEMAS[EMBREF[clave]];
+    if(!m) return "";
+    return '<g transform="translate(93 86) scale(0.56) translate(-50 -50)" filter="url(#lapiz)"'
+      + ' fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"'
+      + ' stroke-linejoin="round" opacity=".9">' + m + '</g>';
+  }
 
   function cortar(txt, max){
     var pal = String(txt).split(/\s+/), ln = [], act = "";
@@ -204,7 +268,7 @@
          Se conserva el lomo de color para que el registro siga leyendose. */
       return '<div class="tapa portada" style="--tono:var(' + tn + ')">'
         + '<img src="' + esc(ruta) + '" alt="' + esc("Portada de " + d.t) + '" loading="lazy">'
-        + '<span class="pie">' + (d.y ? esc(d.y) + " · " : "") + esc(NOMREG[d.r] || "") + '</span>'
+        + '<span class="pie">' + (d.y ? esc(d.y) + " \u00b7 " : "") + esc(NOMREG[d.r] || "") + '</span>'
         + '</div>';
     }
     var n   = d.t.length;
@@ -212,12 +276,12 @@
     var anc = 132;
     function reparte(s){ return cortar(d.t, Math.max(9, Math.round(anc / (s * 0.52)))); }
     var ln = reparte(fs);
-    while(ln.length > 5 && fs > 10){ fs -= 1.5; ln = reparte(fs); }
+    while(ln.length > 4 && fs > 9.5){ fs -= 1.5; ln = reparte(fs); }
     var paso  = fs * 1.18;
     var la    = cortar(String(d.a).toUpperCase(), 25).slice(0, 2);
     var altoT = (ln.length - 1) * paso;
-    var alto  = altoT + 20 + (la.length - 1) * 10;
-    var y0    = 126.5 + 0.39 * fs - alto / 2;
+    var alto  = altoT + 28 + (la.length - 1) * 10;
+    var y0    = 176 - alto / 2 + 0.39 * fs;
     var tt = ln.map(function(l, k){
       return '<tspan x="26" y="' + (y0 + k * paso).toFixed(1) + '">' + esc(l) + '</tspan>';
     }).join("");
@@ -226,7 +290,7 @@
       return '<tspan x="26" y="' + (yR + 15 + k * 10).toFixed(1) + '">' + esc(l) + '</tspan>';
     }).join("");
     return '<svg class="tapa" viewBox="0 0 180 270" role="img" aria-label="'
-      + esc("Tapa de " + d.t + ", de " + d.a) + '" style="--tono:var(' + (REGISTROS[d.r] || "--t07") + ')">'
+      + esc("Tapa de " + d.t + ", de " + d.a) + '" style="--tono:var(' + tn + ')">'
       + '<rect x="0" y="0" width="180" height="270" fill="currentColor" opacity=".11"/>'
       + '<rect x="0" y="0" width="10" height="270" fill="currentColor" opacity=".82"/>'
       + '<g filter="url(#lapiz)" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".5">'
@@ -234,6 +298,7 @@
       +   '<path d="M26 ' + yR.toFixed(1) + ' H120"/>'
       +   '<path d="M26 228 H160"/>'
       + '</g>'
+      + motivo(clave)
       + '<text class="tt" font-size="' + fs + '">' + tt + '</text>'
       + '<text class="ta">' + ta + '</text>'
       + (d.y ? '<text class="ty" x="26" y="243">' + esc(d.y) + '</text>' : "")
