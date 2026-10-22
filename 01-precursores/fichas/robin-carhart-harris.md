@@ -1,0 +1,15 @@
+# Robin Carhart-Harris
+
+**Nacido en 1980. Neurocientífico británico. Qué se ve en el cerebro y la hipótesis del cerebro entrópico.**
+
+Carhart-Harris hizo el doctorado en el Imperial College bajo David Nutt con una pregunta concreta: qué pasa en el cerebro durante el efecto psicodélico. En 2012 publicó el primer estudio de resonancia magnética funcional con psilocibina y el resultado fue contraintuitivo. Se esperaba un cerebro hiperactivo. Lo que apareció fue una reducción del flujo sanguíneo y de la actividad en centros de integración, en particular en la corteza prefrontal medial y en la corteza cingulada posterior, nodos clave de la red neuronal por defecto.
+
+De ahí salió la hipótesis del cerebro entrópico, formulada en 2014. La idea es que el cerebro mantiene su actividad dentro de un rango estrecho de estados mediante jerarquías de predicción, y que los psicodélicos relajan esa restricción: aumenta la diversidad de estados que el sistema visita, se debilita la influencia descendente de los modelos previos, y las regiones que normalmente no conversan empiezan a hacerlo. Trasladado a la clínica, la propuesta es que la depresión y las adicciones son trastornos de rigidez —patrones aprendidos excesivamente fijos— y que lo que la sustancia ofrece es una ventana de plasticidad en la que esos patrones pueden reorganizarse. De ahí el término que acuñó después, *REBUS*, modelos de creencias relajados bajo psicodélicos.
+
+Es la mejor teoría que el campo tiene, y conviene saber qué tan bien sostenida está. Los hallazgos de neuroimagen se han replicado en lo esencial, y la asociación entre magnitud del cambio y respuesta clínica aparece en varios estudios. Lo que no está demostrado es la cadena causal completa: que el aumento de entropía sea lo que produce el beneficio, y no un correlato de otra cosa. Las muestras de neuroimagen son pequeñas, el problema del ciego afecta a estos estudios igual que a los demás, y existe una hipótesis competidora —que lo que importa es la plasticidad sináptica y no la experiencia subjetiva— que la evidencia actual no permite descartar.
+
+En lo clínico, su grupo hizo dos de los ensayos más citados. El estudio abierto de 2016 en depresión resistente, con doce pacientes, fue el primero moderno de su clase. Y en abril de 2021 publicó en *NEJM* la comparación directa entre psilocibina y escitalopram en depresión mayor. Ese ensayo no alcanzó significancia en su desenlace primario, favoreció a la psilocibina en varios secundarios, y fue presentado en la prensa como una victoria que los datos no respaldaban. Carhart-Harris lo dijo con claridad en su momento, y el titular ganó de todas formas.
+
+Desde 2021 trabaja en la Universidad de California en San Francisco, en una cátedra que lleva el nombre de Ralph Metzner. Sigue siendo, entre los investigadores con más visibilidad, uno de los más explícitos sobre las limitaciones de lo que ha encontrado.
+
+**Para seguir.** [David Nutt](david-nutt.md), [farmacología y mecanismo](../../03-ciencia/farmacologia-y-mecanismo.md) y el [mecanismo de la microdosis](../../04-microdosis/mecanismo.md).

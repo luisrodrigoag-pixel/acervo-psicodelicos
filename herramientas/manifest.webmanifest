@@ -1,0 +1,17 @@
+{
+  "name": "Expediente psicodélicos",
+  "short_name": "Expediente",
+  "description": "Acervo documental sobre psicodélicos: precursores, historia, ciencia, microdosis y marco legal en México.",
+  "lang": "es-MX",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F6F7F5",
+  "theme_color": "#1C5A4C",
+  "icons": [
+    { "src": "iconos/icono-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "iconos/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

@@ -1,0 +1,15 @@
+# Aldous Huxley
+
+**1894 a 1963. Novelista y ensayista inglés. El libro que sacó el tema del laboratorio.**
+
+Huxley llevaba treinta años escribiendo sobre percepción, control social y misticismo cuando en mayo de 1953, en su casa de Los Ángeles, tomó cuatro décimas de gramo de sulfato de mescalina bajo supervisión de Humphry Osmond. Tenía cincuenta y nueve años y una vista muy deteriorada desde la adolescencia, lo que vuelve más notable que el centro de su relato sea visual: los pliegues de su pantalón, un jarrón con tres flores, los libros de su estudio vistos como objetos con existencia propia.
+
+*The Doors of Perception* salió en 1954. Son unas cien páginas y su argumento es una sola idea sostenida: el cerebro no construye la experiencia, la filtra. Lo que la mescalina hace, según él, es abrir la válvula reductora que normalmente nos deja ver solo lo útil para sobrevivir. La frase que tomó del poeta William Blake y que dio título al libro —las puertas de la percepción— convirtió esa idea en una imagen que todavía se usa.
+
+El efecto del libro fue desproporcionado respecto de su tamaño. Hasta entonces la literatura del campo era clínica y circulaba entre psiquiatras. Huxley lo puso en manos de lectores que nunca habían leído el *Schweizer Archiv*, y lo hizo con la autoridad del autor de *Un mundo feliz*. Dos años después publicó *Heaven and Hell*, donde corrigió el optimismo: la misma apertura que produce lo sublime puede producir terror, y la diferencia depende de quién eres y de dónde estás cuando ocurre. Es la formulación más temprana de lo que después se llamó *set and setting*, y sigue siendo la parte de su pensamiento que mejor ha envejecido.
+
+También quedó la parte que envejeció mal. Huxley creía que el acceso a esas experiencias debía ser cuidadoso, mediado y reservado a quienes estuvieran preparados. En *Island*, su última novela, de 1962, imaginó una sociedad donde la *moksha medicine* se administraba en ritos de paso con acompañamiento de toda la comunidad. Era una visión elitista en el sentido literal: un bien escaso administrado por quienes saben. Cuando Leary eligió exactamente lo contrario —reparto masivo, sin filtro, sin encuadre— Huxley le escribió para pedirle moderación y no obtuvo nada. Murió antes de ver el cierre.
+
+Murió el 22 de noviembre de 1963, de cáncer de laringe, el mismo día que John F. Kennedy y que C. S. Lewis, lo que dejó su muerte casi sin cobertura. Ya no podía hablar. Escribió en un papel una indicación para su esposa Laura: cien microgramos de LSD, intramuscular. Ella se los administró, y le administró una segunda dosis horas después. Laura Huxley lo contó en una carta que se publicó y que es, probablemente, el documento más citado del campo sobre el uso de psicodélicos al final de la vida. Medio siglo después, los ensayos de Johns Hopkins y NYU en pacientes con cáncer avanzado llegaron al mismo territorio por la vía de los datos.
+
+**Para seguir.** [Humphry Osmond](humphry-osmond.md), el [capítulo de Leary](../capitulos/timothy-leary.md) y los ensayos en enfermedad terminal en [ensayos clínicos](../../03-ciencia/ensayos-clinicos.md).

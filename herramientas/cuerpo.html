@@ -1,0 +1,22 @@
+<header class="barra">
+  <div class="ancho">
+    <a class="marcaja" href="#inicio" style="text-decoration:none;color:inherit">
+      <span class="cn">EP</span><b>Expediente psicodélicos</b>
+    </a>
+    <div class="buscaja">
+      <label for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Buscar en el acervo</label>
+      <input id="q" type="search" autocomplete="off" placeholder="Buscar en el acervo">
+      <span class="tecla">/</span>
+    </div>
+    <div class="herramientas">
+      <button type="button" id="btn-riel" aria-label="Mostrar el índice">Índice</button>
+      <button type="button" id="btn-lectura" aria-pressed="false" title="Tipografía más grande y columna más angosta">Lectura</button>
+      <button type="button" id="btn-tema" title="Claro, oscuro o el del sistema">Sistema</button>
+    </div>
+  </div>
+</header>
+
+<div class="ancho cuerpo">
+  <nav class="riel" id="riel" aria-label="Índice del acervo"></nav>
+  <div class="hoja" id="vista"></div>
+</div>
